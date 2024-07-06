@@ -316,10 +316,9 @@ return [
             'can' => 'manage-blog',
         ],
         [
-            'text' => 'pages',
+            'text' => 'Isi Kehadiran',
             'url' => 'admin/pages',
             'icon' => 'far fa-fw fa-file',
-            'label' => 4,
             'label_color' => 'success',
         ],
         ['header' => 'account_settings'],
