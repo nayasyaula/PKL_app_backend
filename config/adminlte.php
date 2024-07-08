@@ -14,7 +14,7 @@ return [
     |
     */
 
-    'title' => 'AdminLTE 3',
+    'title' => 'MIGINFO',
     'title_prefix' => '',
     'title_postfix' => '',
 
@@ -63,12 +63,12 @@ return [
     |
     */
 
-    'logo' => '<b>ATTENDANCE</b>',
-    'logo_img' => 'vendor/adminlte/dist/img/AdminLTELogo.png',
-    'logo_img_class' => 'brand-image img-circle elevation-3',
-    'logo_img_xl' => null,
-    'logo_img_xl_class' => 'brand-image-xs',
-    'logo_img_alt' => 'Admin Logo',
+    'logo' => '<b>PT</b>MIGINFO',
+    // 'logo_img' => 'vendor/adminlte/dist/img/AdminLTELogo.png',
+    // 'logo_img_class' => 'brand-image img-circle elevation-3',
+    // 'logo_img_xl' => null,
+    // 'logo_img_xl_class' => 'brand-image-xs',
+    // 'logo_img_alt' => 'Admin Logo',
 
     /*
     |--------------------------------------------------------------------------
@@ -83,16 +83,16 @@ return [
     |
     */
 
-    'auth_logo' => [
-        'enabled' => false,
-        'img' => [
-            'path' => 'vendor/adminlte/dist/img/AdminLTELogo.png',
-            'alt' => 'Auth Logo',
-            'class' => '',
-            'width' => 50,
-            'height' => 50,
-        ],
-    ],
+    // 'auth_logo' => [
+    //     'enabled' => false,
+    //     'img' => [
+    //         'path' => 'vendor/adminlte/dist/img/AdminLTELogo.png',
+    //         'alt' => 'Auth Logo',
+    //         'class' => '',
+    //         'width' => 50,
+    //         'height' => 50,
+    //     ],
+    // ],
 
     /*
     |--------------------------------------------------------------------------
@@ -109,17 +109,17 @@ return [
     |
     */
 
-    'preloader' => [
-        'enabled' => true,
-        'mode' => 'fullscreen',
-        'img' => [
-            'path' => 'vendor/adminlte/dist/img/AdminLTELogo.png',
-            'alt' => 'AdminLTE Preloader Image',
-            'effect' => 'animation__shake',
-            'width' => 60,
-            'height' => 60,
-        ],
-    ],
+    // 'preloader' => [
+    //     'enabled' => true,
+    //     'mode' => 'fullscreen',
+    //     'img' => [
+    //         'path' => 'vendor/adminlte/dist/img/AdminLTELogo.png',
+    //         'alt' => 'AdminLTE Preloader Image',
+    //         'effect' => 'animation__shake',
+    //         'width' => 60,
+    //         'height' => 60,
+    //     ],
+    // ],
 
     /*
     |--------------------------------------------------------------------------
@@ -296,11 +296,6 @@ return [
     'menu' => [
         // Navbar items:
         [
-            'type' => 'navbar-search',
-            'text' => 'search',
-            'topnav_right' => true,
-        ],
-        [
             'type' => 'fullscreen-widget',
             'topnav_right' => true,
         ],
@@ -316,7 +311,7 @@ return [
             'can' => 'manage-blog',
         ],
         [
-            'text' => 'Isi Kehadiran',
+            'text' => 'Input your Attendance',
             'url' => 'admin/pages',
             'icon' => 'far fa-fw fa-file',
             'label_color' => 'success',

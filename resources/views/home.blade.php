@@ -2,16 +2,58 @@
 
 @section('title', 'Dashboard')
 
-@section('content_header')
-<h1>Dashboard</h1>
+@section('content')
+    <div class="container-fluid">
+
+        <div class="jumbotron bg-light p-4">
+            <h1 class="display-4">Dashboard</h1>
+            <p class="lead">Welcome to Web Attendance PT Mitra Global Informatika</p>
+            <hr class="my-4">
+            <p>Manage your attendance and tasks efficiently with our comprehensive dashboard.</p>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-4 col-12 mb-4">
+                <div class="small-box bg-info">
+                    <div class="inner">
+                        <h3>25</h3>
+                        <p>Attendance Today</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-calendar-check"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-12 mb-4">
+                <div class="small-box bg-success">
+                    <div class="inner">
+                        <h3>150</h3> {{-- Example static value --}}
+                        <p>Total Users</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-12 mb-4">
+                <div class="small-box bg-warning">
+                    <div class="inner">
+                        <h3>75</h3> {{-- Example static value --}}
+                        <p>Tasks Completed</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fas fa-tasks"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 @stop
 
-@section('content')
-<p>Welcome to Website Attendance MIGINFO</p>
-@stop
 
 @section('css')
-<link rel="stylesheet" href="/css/admin_custom.css">
+    <link rel="stylesheet" href="/css/admin_custom.css">
 @stop
 
 @section('js')
