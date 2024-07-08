@@ -1,53 +1,66 @@
-@extends('adminlte:page')
+@extends('adminlte::page')
 
 @section('content')
-        <div class="jumbroton py-2 px-1">
-            <h4 class="display" style="color: black;">
-                Tambah Data Rayon
-            </h4>
-            <p style="color: black;">
-                <a class="button_waterpump" style="color: black;" href="/admin/dashboard">Home</a> /
-                <a class="button_waterpump" style="color: black;" href="{{ route('admin.rayon.home') }}">Data Rayon</a> /
-                <a class="button_waterpump" style="color: black;">Tambah Data Rayon</a>
-            </p>
-        </div>
-        @if (Session::get('success'))
-            <div class="alert alert-success" {{ Session::get('success') }}></div>
-        @endif
-        @if ($errors->any())
-            <ul class="alert alert-danger">
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        @endif
-    <form action="{{ route('admin.rayon.store') }}" method="POST" class="card p-5 shadow p-1 mb-4 border-0" style="width: 80%">
+    <div class="jumbotron py-2 px-1 bg-light">
+        <h4 class="display-4" style="color: black;">
+            Input Kehadiran Hari ini
+        </h4>
+    </div>
+    <form action="{{ route('admin.store')}}" method="POST" class="card p-5 shadow border-0 mx-auto" style="width: 80%">
         @csrf
-        <div class="mb-3 row">
-            <label for="rayon" class="col-sm-2 col-form-label">Rayon</label>
-            <div class="col-sm-10">
-                <input type="text" class="form-control" id="rayon" name="rayon">
-            </div>
-        </div>
-        <div class="mb-3 row">
-            <label for="price" class="col-sm-2 col-form-label">Pembimbing Siswa</label>
-            <div class="col-sm-10">
-                <select name="user_id" class="form-control form-control-select">
-                    @foreach($users as $user)
-                    @if($user['role'] == 'ps')
-                    <option selected disabled hidden>Pilih</option>
-                    <option value="{{ $user->id }}">{{ $user->name }}</option>
-                    @endif
-                    @endforeach
-                </select>
-            </div>
-        </div>
-        <button type="submit" class="btn btn-primary mt-3">Tambah</button>
+        <input type="hidden" name="in" id="inField">
+        <input type="hidden" name="out" id="outField">
+        <button type="submit" class="btn btn-primary mt-3" id="attendanceButton">Masuk</button>
     </form>
 @endsection
 
+@section('js')
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const attendanceButton = document.getElementById('attendanceButton');
+            const inField = document.getElementById('inField');
+            const outField = document.getElementById('outField');
+
+            attendanceButton.addEventListener('click', function (e) {
+                e.preventDefault(); // Prevent form submission
+
+                if (attendanceButton.textContent === 'Masuk') {
+                    inField.value = new Date().toISOString(); // Set 'in' value
+                    attendanceButton.textContent = 'Keluar';
+                    attendanceButton.classList.remove('btn-primary');
+                    attendanceButton.classList.add('btn-danger');
+                } else {
+                    outField.value = new Date().toISOString(); // Set 'out' value
+                    attendanceButton.textContent = 'Masuk';
+                    attendanceButton.classList.remove('btn-danger');
+                    attendanceButton.classList.add('btn-primary');
+                }
+
+                // Submit the form after setting the values
+                e.target.form.submit();
+            });
+        });
+    </script>
+@endsection
+
 <style>
-    .jumbroton.py-2.px-1 p a {
+    .jumbotron.py-2.px-1 {
+        background-color: #f8f9fa;
+        border-radius: 5px;
+        text-align: center;
+    }
+    .jumbotron.py-2.px-1 p a {
         text-decoration: none;
+    }
+    .card {
+        background-color: #ffffff;
+    }
+    .btn-primary {
+        background-color: #007bff;
+        border-color: #007bff;
+    }
+    .btn-danger {
+        background-color: #dc3545;
+        border-color: #dc3545;
     }
 </style>
