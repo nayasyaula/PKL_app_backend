@@ -8,7 +8,7 @@ use App\Http\Controllers\ToDoListController;
 use Illuminate\Support\Facades\Auth;
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('template');
 });
 
 Auth::routes();
@@ -35,3 +35,4 @@ Route::middleware(['auth'])->group(function () {
     //     // Routes yang membutuhkan pengecekan role
     // });
 });
+
