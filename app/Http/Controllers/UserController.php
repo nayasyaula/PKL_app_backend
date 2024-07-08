@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AttendanceModel;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
@@ -11,7 +13,9 @@ class UserController extends Controller
      */
     public function index()
     {
-        //
+        $users = User::all(); 
+
+        return view('user', compact('users')); 
     }
 
     /**
@@ -35,8 +39,12 @@ class UserController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $user = User::findOrFail($id); 
+        $attendance = AttendanceModel::where('user_id', $id)->get(); 
+        
+        return view('show-user', compact('user', 'attendance'));
     }
+    
 
     /**
      * Show the form for editing the specified resource.

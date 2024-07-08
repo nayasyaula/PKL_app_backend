@@ -4,18 +4,26 @@ namespace App\Http\Controllers;
 
 use App\Models\AttendanceModel;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+
 class AttendanceModelController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
-    {
-        $attendance = AttendanceModel::all();
 
-        return view('admin.pages', compact('attendance'));
+    public function index(Request $request)
+    {
+        $userId = Auth::id();
+        echo ($userId);
+
+        $todayDate = Carbon::today()->setTimezone('Asia/Jakarta')->toDateString();
+
+        $attendance = AttendanceModel::where('user_id', $userId)->whereDate('created_at', $todayDate)->get();
+
+        return view('pages', compact('attendance'));
     }
 
     /**
@@ -36,24 +44,27 @@ class AttendanceModelController extends Controller
 
         $userId = Auth::id();
 
+        $inTime = Carbon::parse($request->input('in'))->setTimezone('Asia/Jakarta');
+
         AttendanceModel::create([
             'user_id' => $userId,
-            'in' => $request->input('in'),
-            'status' => 'masuk', 
+            'in' => $inTime,
+            'status' => 'Masuk',
         ]);
 
         $validated = $request->validate([
             'in' => 'nullable|date',
             'out' => 'nullable|date'
         ]);
-        
+
+
         // $attendance = new AttendanceModel();
         // $attendance->in = $validated['in'];
         // $attendance->out = $validated['out'];
         // $attendance->status = $attendance->out ? 'keluar' : 'masuk';
         // $attendance->save();
 
-        return view('admin.pages', compact('attendance'));
+        return redirect()->route('pages');
     }
 
 
@@ -76,34 +87,26 @@ class AttendanceModelController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, AttendanceModel $attendanceModel)
+    public function update(Request $request, AttendanceModel $attendanceModel, $id)
     {
-        $validated = $request->validate([
+        $request->validate([
+            'in' => 'nullable|date',
             'out' => 'nullable|date'
         ]);
 
         $userId = Auth::id();
 
-        // Find today's attendance record for the current user
-        $attendance = AttendanceModel::where('user_id', $userId)
-            ->whereDate('created_at', today())
-            ->first();
+        $outTime = Carbon::parse($request->input('out'))->setTimezone('Asia/Jakarta');
 
-        if ($attendance) {
-            // If 'out' is null, use the current time
-            $outTime = $validated['out'] ?? now();
+        AttendanceModel::where('id', $id)->update([
+            'user_id' => $userId,
+            'out' => $outTime,
+            'status' => 'Keluar',
+        ]);
 
-            // Update the attendance record
-            $attendance->update([
-                'out' => $outTime,
-                'status' => 'keluar',
-            ]);
+        
 
-            return view('admin.pages', compact('attendance'));
-        } else {
-            // Handle the case where the attendance record does not exist
-            return redirect()->back()->withErrors(['message' => 'Attendance record not found.']);
-        }
+        return redirect()->route('pages');
     }
 
     /**
@@ -113,5 +116,4 @@ class AttendanceModelController extends Controller
     {
         //
     }
-
 }
