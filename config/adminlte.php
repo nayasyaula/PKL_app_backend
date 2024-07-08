@@ -321,6 +321,12 @@ return [
             'label_color' => 'success',
         ],
         [
+            'text' => 'To Do List',
+            'url' => 'ToDoList/index',
+            'icon' => 'far fa-fw fa-file',
+            'label_color' => 'success',
+        ],
+        [
             'text' => 'User',
             'url' => 'user',
             'icon' => 'far fa-light fa-user',
