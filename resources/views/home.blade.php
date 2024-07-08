@@ -38,7 +38,7 @@
                 </div>
             @endif
 
-            @if(auth()->user()->role == 'users')
+            @if(auth()->user()->role == 'user')
                 <div class="col-lg-4 col-12 mb-4">
                     <div class="small-box bg-warning">
                         <div class="inner">

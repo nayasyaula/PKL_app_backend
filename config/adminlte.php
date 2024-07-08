@@ -70,6 +70,7 @@ return [
     'logo_img_xl_class' => 'brand-image-xs',
     'logo_img_alt' => 'Admin Logo',
 
+
     /*
     |--------------------------------------------------------------------------
     | Authentication Logo
@@ -86,7 +87,7 @@ return [
     'auth_logo' => [
         'enabled' => false,
         'img' => [
-            'path' => 'vendor/adminlte/dist/img/AdminLTELogo.png',
+            'path' => 'vendor/adminlte/dist/img/miginfo.png',
             'alt' => 'Auth Logo',
             'class' => '',
             'width' => 50,
@@ -113,7 +114,7 @@ return [
         'enabled' => true,
         'mode' => 'fullscreen',
         'img' => [
-            // 'path' => 'vendor/adminlte/dist/img/AdminLTELogo.png',
+            'path' => 'vendor/adminlte/dist/img/miginfo.png',
             'alt' => 'AdminLTE Preloader Image',
             'effect' => 'animation__shake',
             'width' => 60,
@@ -300,39 +301,35 @@ return [
             'topnav_right' => true,
         ],
 
-        // Sidebar items:
-        [
-            'type' => 'sidebar-menu-search',
-            'text' => 'search',
-        ],
-
         // General menu item
         [
             'text' => 'Dashboard',
             'url'  => 'home',
-            'icon' => 'fa-solid fa-house',
+            'icon' => 'fas fa-home',  // Ikon yang lebih umum untuk dashboard
             'label_color' => 'success',
         ],
         [
             'text' => 'Input your Attendance',
-            'url' => 'pages',
-            'icon' => 'far fa-fw fa-file',
+            'url'  => 'pages',
+            'icon' => 'fas fa-calendar-check',  // Ikon yang lebih cocok untuk absensi
             'can'  => 'isUser',
             'label_color' => 'success',
         ],
         [
             'text' => 'To Do List',
-            'url' => 'ToDoList/index',
-            'icon' => 'far fa-fw fa-file',
+            'url'  => 'ToDoList/index',
+            'icon' => 'fas fa-tasks',  // Ikon yang lebih cocok untuk daftar tugas
+            'can'  => 'isUser',
             'label_color' => 'success',
         ],
         [
             'text' => 'User',
-            'url' => 'user',
-            'icon' => 'far fa-light fa-user',
+            'url'  => 'user',
+            'icon' => 'fas fa-user',  // Ikon yang lebih sederhana dan cocok untuk pengguna
             'can'  => 'isAdmin',
             'label_color' => 'success',
         ],
+        
     ],
 
     /*

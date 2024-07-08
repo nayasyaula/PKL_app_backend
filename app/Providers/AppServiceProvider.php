@@ -22,12 +22,12 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->register();
 
+        Gate::define('isUser', function ($user) {
+            return $user->role === 'user';
+        });
+
         Gate::define('isAdmin', function ($user) {
             return $user->role === 'admin';
-        });
-    
-        Gate::define('isUser', function ($user) {
-            return $user->role === 'users';
-        });    
+        });  
     }
 }
