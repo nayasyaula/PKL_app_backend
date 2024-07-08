@@ -15,16 +15,10 @@ class ToDoList extends Model
         'status',
         'date',    
         'user_id',
-        'attendance_id',
     ];
 
-    // public function user()
-    // {
-    //     return $this->belongsTo(User::class);
-    // }
-
-    // public function attendance()
-    // {
-    //     return $this->belongsTo(Attendance::class);
-    // }
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

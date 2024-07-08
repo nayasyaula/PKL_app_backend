@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\ToDoList;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ToDoListController extends Controller
 {
@@ -29,7 +30,7 @@ class ToDoListController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+        public function store(Request $request)
     {
         $request->validate([
             'content' => 'required|string',
@@ -37,7 +38,9 @@ class ToDoListController extends Controller
             'date' => 'required|date',
         ]);
 
-        ToDoList::create($request->all());
+        $data = $request->all();
+        $data['user_id'] = Auth::id(); // Mengambil id pengguna yang sedang masuk
+        ToDoList::create($data);
 
         return redirect()->route('ToDoList.index')
             ->with('success', 'To-Do List berhasil dibuat.');
@@ -45,21 +48,20 @@ class ToDoListController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(ToDoList $todolist)
+    public function edit($id)
     {
+        $todolist = ToDoList::findOrFail($id);
         return view('ToDoList.edit', compact('todolist'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, $id)
+public function update(Request $request, $id)
     {
         $request->validate([
             'content' => 'required|string',
             'status' => 'required|string',
             'date' => 'required|date',
         ]);
+
         $todolist = ToDoList::findOrFail($id);
         $todolist->update($request->all());
 
