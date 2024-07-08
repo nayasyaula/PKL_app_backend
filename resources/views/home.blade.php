@@ -13,44 +13,47 @@
         </div>
 
         <div class="row">
-            <div class="col-lg-4 col-12 mb-4">
-                <div class="small-box bg-info">
-                    <div class="inner">
-                        <h3>25</h3>
-                        <p>Attendance Today</p>
-                    </div>
-                    <div class="icon">
-                        <i class="fas fa-calendar-check"></i>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4 col-12 mb-4">
-                <div class="small-box bg-success">
-                    <div class="inner">
-                        <h3>150</h3> {{-- Example static value --}}
-                        <p>Total Users</p>
-                    </div>
-                    <div class="icon">
-                        <i class="fas fa-users"></i>
+            @if(auth()->user()->role == 'admin')
+                <div class="col-lg-4 col-12 mb-4">
+                    <div class="small-box bg-info">
+                        <div class="inner">
+                            <h3>{{ App\Models\AttendanceModel::all()->count() }}</h3>
+                            <p>Attendance Today</p>
+                        </div>
+                        <div class="icon">
+                            <i class="fas fa-calendar-check"></i>
+                        </div>
                     </div>
                 </div>
-            </div>
+                <div class="col-lg-4 col-12 mb-4">
+                    <div class="small-box bg-success">
+                        <div class="inner">
+                            <h3>{{ App\Models\User::all()->count() }}</h3>
+                            <p>Total Users</p>
+                        </div>
+                        <div class="icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                    </div>
+                </div>
+            @endif
 
-            <div class="col-lg-4 col-12 mb-4">
-                <div class="small-box bg-warning">
-                    <div class="inner">
-                        <h3>75</h3> {{-- Example static value --}}
-                        <p>Tasks Completed</p>
-                    </div>
-                    <div class="icon">
-                        <i class="fas fa-tasks"></i>
+            @if(auth()->user()->role == 'users')
+                <div class="col-lg-4 col-12 mb-4">
+                    <div class="small-box bg-warning">
+                        <div class="inner">
+                            <h3>75</h3> {{-- Example static value --}}
+                            <p>Tasks Completed</p>
+                        </div>
+                        <div class="icon">
+                            <i class="fas fa-tasks"></i>
+                        </div>
                     </div>
                 </div>
-            </div>
+            @endif
         </div>
     </div>
 @stop
-
 
 @section('css')
     <link rel="stylesheet" href="/css/admin_custom.css">
@@ -58,6 +61,6 @@
 
 @section('js')
 <script>
-    console.log('Tessss!')
+    console.log('Dashboard loaded!')
 </script>
 @stop
