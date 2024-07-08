@@ -316,6 +316,12 @@ return [
             'icon' => 'far fa-fw fa-file',
             'label_color' => 'success',
         ],
+        [
+            'text' => 'To Do List',
+            'url' => 'ToDoList/index',
+            'icon' => 'far fa-fw fa-file',
+            'label_color' => 'success',
+        ],
         ['header' => 'account_settings'],
         [
             'text' => 'profile',
