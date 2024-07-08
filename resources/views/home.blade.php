@@ -7,7 +7,7 @@
 @stop
 
 @section('content')
-<p>Welcome to Web Attendance MIGINFO</p>
+<p>Welcome to Website Attendance MIGINFO</p>
 @stop
 
 @section('css')
