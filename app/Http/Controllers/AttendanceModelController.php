@@ -4,9 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\AttendanceModel;
 use App\Models\User;
-use Illuminate\Foundation\Auth\User;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Auth;
 class AttendanceModelController extends Controller
 {
     /**
@@ -16,7 +15,7 @@ class AttendanceModelController extends Controller
     {
         $attendance = AttendanceModel::all();
 
-        return view('admin.pages.index', compact('attendance'));
+        return view('admin.pages', compact('attendance'));
     }
 
     /**
@@ -24,9 +23,7 @@ class AttendanceModelController extends Controller
      */
     public function create()
     {
-        $users = User::all();
-
-        return view('admin.pages.create', compact('users'));
+        //
     }
 
     /**
@@ -34,22 +31,31 @@ class AttendanceModelController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'in' => 'required',
-            'out' => 'required',
-            'status' => 'required',
-            'user_id' => 'required'
-        ]);
+
+        $attendance = AttendanceModel::all();
+
+        $userId = Auth::id();
 
         AttendanceModel::create([
-            'in' => $request->in,
-            'out' => $request->out,
-            'status' => $request->status,
-            'user_id' => $request->user_id,
+            'user_id' => $userId,
+            'in' => $request->input('in'),
+            'status' => 'masuk', 
         ]);
 
-        return redirect()->route('admin.pages.home')->with('success', 'Berhasil menambahkan data kehadiran');
+        $validated = $request->validate([
+            'in' => 'nullable|date',
+            'out' => 'nullable|date'
+        ]);
+        
+        // $attendance = new AttendanceModel();
+        // $attendance->in = $validated['in'];
+        // $attendance->out = $validated['out'];
+        // $attendance->status = $attendance->out ? 'keluar' : 'masuk';
+        // $attendance->save();
+
+        return view('admin.pages', compact('attendance'));
     }
+
 
     /**
      * Display the specified resource.
@@ -72,7 +78,32 @@ class AttendanceModelController extends Controller
      */
     public function update(Request $request, AttendanceModel $attendanceModel)
     {
-        //
+        $validated = $request->validate([
+            'out' => 'nullable|date'
+        ]);
+
+        $userId = Auth::id();
+
+        // Find today's attendance record for the current user
+        $attendance = AttendanceModel::where('user_id', $userId)
+            ->whereDate('created_at', today())
+            ->first();
+
+        if ($attendance) {
+            // If 'out' is null, use the current time
+            $outTime = $validated['out'] ?? now();
+
+            // Update the attendance record
+            $attendance->update([
+                'out' => $outTime,
+                'status' => 'keluar',
+            ]);
+
+            return view('admin.pages', compact('attendance'));
+        } else {
+            // Handle the case where the attendance record does not exist
+            return redirect()->back()->withErrors(['message' => 'Attendance record not found.']);
+        }
     }
 
     /**
@@ -82,4 +113,5 @@ class AttendanceModelController extends Controller
     {
         //
     }
+
 }

@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('attendance_models', function (Blueprint $table) {
             $table->id();
             $table->string('in');
-            $table->string('out');
+            $table->string('out')->nullable();
             $table->string('status');
             $table->bigInteger('user_id');
             $table->timestamps();
