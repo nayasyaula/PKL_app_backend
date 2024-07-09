@@ -40,29 +40,16 @@ class AttendanceModelController extends Controller
     public function store(Request $request)
     {
 
-        $attendance = AttendanceModel::all();
-
         $userId = Auth::id();
-
         $inTime = Carbon::parse($request->input('in'))->setTimezone('Asia/Jakarta');
+
+        $status = $inTime->hour < 8 ? 'Masuk' : 'Telat';
 
         AttendanceModel::create([
             'user_id' => $userId,
             'in' => $inTime,
-            'status' => 'Masuk',
+            'status' => $status,
         ]);
-
-        $validated = $request->validate([
-            'in' => 'nullable|date',
-            'out' => 'nullable|date'
-        ]);
-
-
-        // $attendance = new AttendanceModel();
-        // $attendance->in = $validated['in'];
-        // $attendance->out = $validated['out'];
-        // $attendance->status = $attendance->out ? 'keluar' : 'masuk';
-        // $attendance->save();
 
         return redirect()->route('pages');
     }
@@ -89,24 +76,19 @@ class AttendanceModelController extends Controller
      */
     public function update(Request $request, AttendanceModel $attendanceModel, $id)
     {
-        $request->validate([
-            'in' => 'nullable|date',
-            'out' => 'nullable|date'
-        ]);
-
         $userId = Auth::id();
-
         $outTime = Carbon::parse($request->input('out'))->setTimezone('Asia/Jakarta');
+
+        $status = $outTime->hour >= 16 && $outTime->minute >= 55 ? 'Keluar' : 'Izin';
 
         AttendanceModel::where('id', $id)->update([
             'user_id' => $userId,
             'out' => $outTime,
-            'status' => 'Keluar',
+            'status' => $status,
         ]);
 
-        
-
         return redirect()->route('pages');
+
     }
 
     /**

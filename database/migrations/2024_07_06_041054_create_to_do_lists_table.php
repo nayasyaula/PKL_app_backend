@@ -15,7 +15,12 @@ return new class extends Migration
             $table->id();
             $table->string('content');
             $table->string('status');
+            $table->date('date');
+            $table->bigInteger('user_id');
             $table->timestamps();
+
+            // Optional: Add foreign key constraint if you have a users table
+            // $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

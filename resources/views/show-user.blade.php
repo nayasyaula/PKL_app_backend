@@ -33,7 +33,38 @@
             </div>
             <hr class="my-4">
             <h1>To Do List</h1> 
-            <!-- Add To Do List content here -->
+            <div class="card-body">
+                @if (is_countable($todos) && count($todos) > 0)
+                    @foreach ($todos as $date => $tasks)
+                        @php
+                            $formattedDate = date('d M Y', strtotime($date));
+                        @endphp
+                        <div class="mb-4">
+                            <h4>{{ $formattedDate }}</h4>
+                            <table class="table table-bordered">
+                                <thead class="thead-dark">
+                                    <tr>
+                                        <th>No</th>
+                                        <th>Content</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($tasks as $todo)
+                                        <tr>
+                                            <td>{{ $loop->iteration }}</td>
+                                            <td>{{ $todo->content }}</td>
+                                            <td>{{$todo->status}} </td>                                
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    @endforeach
+                @else
+                    <div class="alert alert-info">Tidak ada data To Do List yang tersedia.</div>
+                @endif
+            </div>
         </div>
     </div>
 @endsection

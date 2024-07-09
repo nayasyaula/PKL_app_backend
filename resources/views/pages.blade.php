@@ -33,7 +33,7 @@
                     <th scope="col">No</th>
                     <th scope="col">Attendance IN</th>
                     <th scope="col">Attendance OUT</th>
-                    <th scope="col">Status</th>
+                    <th scope="col">Status Now</th>
                 </tr>
             </thead>
             <tbody>

@@ -34,8 +34,8 @@
   <header id="header" class="fixed-top  header-transparent ">
     <div class="container d-flex align-items-center justify-content-between">
 
-      <div class="logo">
-        <a href="index.html"><img src="assets/img/logo.png" alt="" class="img-fluid"></a>
+      <div class="logo d-flex align-items-center gap-2">
+        <a href="index.html"><img src="assets/img/logo.jpg" alt="" class="img-fluid"></a>
         <h1><a href="index.html">MIGINFO</a></h1>
       </div>
 

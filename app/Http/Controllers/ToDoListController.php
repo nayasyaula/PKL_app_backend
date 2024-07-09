@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\ToDoList;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class ToDoListController extends Controller
 {
@@ -13,11 +14,11 @@ class ToDoListController extends Controller
      */
     public function index()
     {
-        // orderBy('date') untuk mengurutkan tugas berdasarkan tanggal,
         $todos = ToDoList::orderBy('date')->get()->groupBy('date');
+
         return view('ToDoList.index', compact('todos'));
-        
     }
+
 
     /**
      * Show the form for creating a new resource.
@@ -30,7 +31,7 @@ class ToDoListController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-        public function store(Request $request)
+    public function store(Request $request)
     {
         $request->validate([
             'content' => 'required|string',
@@ -54,7 +55,7 @@ class ToDoListController extends Controller
         return view('ToDoList.edit', compact('todolist'));
     }
 
-public function update(Request $request, $id)
+    public function update(Request $request, $id)
     {
         $request->validate([
             'content' => 'required|string',
@@ -67,6 +68,11 @@ public function update(Request $request, $id)
 
         return redirect()->route('ToDoList.index')
             ->with('success', 'To-Do List berhasil diupdate.');
+    }
+
+    public function show()
+    {
+        //
     }
 
     /**
