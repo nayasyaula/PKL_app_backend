@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\AttendanceModel;
+use App\Models\ToDoList;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -42,7 +43,9 @@ class UserController extends Controller
         $user = User::findOrFail($id); 
         $attendance = AttendanceModel::where('user_id', $id)->get(); 
         
-        return view('show-user', compact('user', 'attendance'));
+        $todos = ToDoList::orderBy('date')->where('user_id', $id)->get()->groupBy('date');
+
+        return view('show-user', compact('user', 'attendance', 'todos'));
     }
     
 

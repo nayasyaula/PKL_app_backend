@@ -20,7 +20,7 @@ Route::middleware(['auth'])->group(function () {
     Route::patch('/update/{id}', [AttendanceModelController::class, 'update'])->name('update');
 
     Route::get('/user', [UserController::class, 'index'])->name('user');
-    Route::get('/user/show/{id}', [UserController::class, 'show'])->name('show');
+    Route::get('/user/show/{id}', [UserController::class, 'show'])->name('show.user');
 
     // Route::resource('todolist', ToDoListController::class);
     Route::get('/ToDoList/index', [ToDoListController::class, 'index'])->name('ToDoList.index');
@@ -30,6 +30,7 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/todolist/{todolist}/update', [ToDoListController::class, 'update'])->name('ToDoList.update');
     Route::delete('/todolist/{id}/delete', [ToDoListController::class, 'destroy'])->name('ToDoList.destroy');
     Route::put('/todolist/{id}/updateStatus', [ToDoListController::class, 'updateStatus'])->name('ToDoList.updateStatus');
+
 
     // Route::middleware(['checkUserRole'])->group(function () {
     //     // Routes yang membutuhkan pengecekan role

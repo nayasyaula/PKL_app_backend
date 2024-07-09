@@ -36,13 +36,24 @@
                         </div>
                     </div>
                 </div>
+                <div class="col-lg-4 col-12 mb-4">
+                    <div class="small-box bg-warning">
+                        <div class="inner">
+                            <h3>{{ App\Models\ToDoList::where('status' , 'completed')->count() }}</h3>
+                            <p>Tasks Completed</p>
+                        </div>
+                        <div class="icon">
+                            <i class="fas fa-tasks"></i>
+                        </div>
+                    </div>
+                </div>
             @endif
 
             @if(auth()->user()->role == 'user')
                 <div class="col-lg-4 col-12 mb-4">
                     <div class="small-box bg-warning">
                         <div class="inner">
-                            <h3>75</h3> {{-- Example static value --}}
+                            <h3>{{ App\Models\ToDoList::where('status' , 'completed')->count() }}</h3>
                             <p>Tasks Completed</p>
                         </div>
                         <div class="icon">
