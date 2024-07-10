@@ -33,13 +33,11 @@
             </div>
             <hr class="my-4">
             <h1>To Do List</h1>
-
             @if (session('success'))
                 <div class="alert alert-success">
                     {{ session('success') }}
                 </div>
             @endif
-
             <div class="card-body">
                 @if (is_countable($todos) && count($todos) > 0)
                     @foreach ($todos as $date => $tasks)
@@ -57,6 +55,7 @@
                                         <th>Status</th>
                                         <th>Action</th>
                                         <th>Pesan</th>
+                                        <th>Status</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -93,6 +92,7 @@
                                                     </div>
                                                 </form>
                                             </td>
+                                            <td>{{$todo->status}} </td>                                
                                         </tr>
                                     @endforeach
                                 </tbody>

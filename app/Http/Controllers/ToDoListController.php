@@ -6,6 +6,7 @@ use App\Models\AttendanceModel;
 use App\Models\ToDoList;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class ToDoListController extends Controller
 {
@@ -18,6 +19,7 @@ class ToDoListController extends Controller
 
         return view('ToDoList.index', compact('todos'));
     }
+
 
     /**
      * Show the form for creating a new resource.
@@ -61,9 +63,6 @@ class ToDoListController extends Controller
         return view('ToDoList.edit', compact('todolist'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, $id)
     {
         $request->validate([
@@ -84,6 +83,11 @@ class ToDoListController extends Controller
 
         return redirect()->route('ToDoList.index')
             ->with('success', 'To-Do List berhasil diupdate.');
+    }
+
+    public function show()
+    {
+        //
     }
 
     /**
@@ -107,7 +111,6 @@ class ToDoListController extends Controller
         return redirect()->route('ToDoList.index')->with('success', 'Status berhasil diupdate.');
     }
 
-
     public function pesan(Request $request, $id)
     {
         $request->validate([
@@ -119,19 +122,5 @@ class ToDoListController extends Controller
         $todo->save();
 
         return redirect()->route('ToDoList.index')->with('success', 'Pesan berhasil disimpan.');
-        // return redirect()->route('show-user')->with('success', 'Pesan berhasil disimpan.');
-
     }   
-
-//     public function showUser()
-// {
-//     $user = Auth::user(); // Ambil data user saat ini
-//     $todos = ToDoList::all(); // Ambil data ToDoList
-//     $attendance = AttendanceModel::all(); // Ambil data kehadiran
-
-//     return view('show-user', [
-//         'todos' => $todos, // Kirimkan data yang diperlukan ke view show-user.blade.php
-//     ]);
-// }
-
 }
