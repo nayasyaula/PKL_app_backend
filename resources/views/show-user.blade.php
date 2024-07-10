@@ -55,7 +55,6 @@
                                         <th>Status</th>
                                         <th>Action</th>
                                         <th>Pesan</th>
-                                        <th>Status</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -92,7 +91,6 @@
                                                     </div>
                                                 </form>
                                             </td>
-                                            <td>{{$todo->status}} </td>                                
                                         </tr>
                                     @endforeach
                                 </tbody>
