@@ -54,18 +54,26 @@
 @section('js')
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const attendanceButton = document.getElementById('attendanceButton');
-            const inField = document.getElementById('inField');
-            const outField = document.getElementById('outField');
+        const attendanceButton = document.getElementById('attendanceButton');
+        const inField = document.getElementById('inField');
+        const outField = document.getElementById('outField');
+        const todayAttendance = @json($todayAttendance);
 
-            attendanceButton.addEventListener('click', function () {
-                if (attendanceButton.textContent === 'Attendance IN') {
-                    inField.value = new Date().toISOString();
-                } else {
-                    outField.value = new Date().toISOString();
-                }
-            });
+        attendanceButton.addEventListener('click', function () {
+            if (todayAttendance === null || todayAttendance.in === null) {
+                inField.value = new Date().toISOString();
+            } else if (todayAttendance.out === null) {
+                outField.value = new Date().toISOString();
+            } else {
+                attendanceButton.disabled = true;
+            }
         });
+
+        if (todayAttendance !== null && todayAttendance.out !== null) {
+            attendanceButton.disabled = true;
+        }
+    });
+
     </script>
 @endsection
 
