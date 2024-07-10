@@ -32,7 +32,12 @@
                 </table>
             </div>
             <hr class="my-4">
-            <h1>To Do List</h1> 
+            <h1>To Do List</h1>
+            @if (session('success'))
+                <div class="alert alert-success">
+                    {{ session('success') }}
+                </div>
+            @endif
             <div class="card-body">
                 @if (is_countable($todos) && count($todos) > 0)
                     @foreach ($todos as $date => $tasks)
@@ -46,6 +51,10 @@
                                     <tr>
                                         <th>No</th>
                                         <th>Content</th>
+                                        <th>Keterangan</th>
+                                        <th>Status</th>
+                                        <th>Action</th>
+                                        <th>Pesan</th>
                                         <th>Status</th>
                                     </tr>
                                 </thead>
@@ -54,6 +63,35 @@
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $todo->content }}</td>
+                                            <td>{{ $todo->keterangan }}</td>
+                                            <td>
+                                                @if ($todo->status == 'Completed')
+                                                    <span class="badge badge-success">{{ $todo->status }}</span>
+                                                @elseif ($todo->status == 'Pending')
+                                                    <span class="badge badge-warning">{{ $todo->status }}</span>
+                                                @endif
+                                            </td>
+                                            <td>
+                                                <form action="{{ route('user.updateStatus', $todo->id) }}" method="POST" id="updateStatusForm{{ $todo->id }}">
+                                                    @csrf
+                                                    @method('PUT')
+                                                    <div class="form-check">
+                                                        <input type="checkbox" class="form-check-input" name="status" onchange="this.form.submit()" {{ $todo->status == 'Completed' ? 'checked' : '' }}>
+                                                        <label class="form-check-label">{{ $todo->status }}</label>
+                                                    </div>
+                                                </form>
+                                            </td>
+                                            <td>
+                                                <form action="{{ route('user.pesan', $todo->id) }}" method="POST">
+                                                    @csrf
+                                                    <div class="input-group">
+                                                        <input type="text" name="pesan" class="form-control" placeholder="Tambahkan pesan...">
+                                                        <div class="input-group-append">
+                                                            <button type="submit" class="btn btn-info btn-sm">Kirim Pesan ke Index</button>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </td>
                                             <td>{{$todo->status}} </td>                                
                                         </tr>
                                     @endforeach
@@ -68,28 +106,3 @@
         </div>
     </div>
 @endsection
-
-<style>
-    .jumbotron {
-        background-color: #f8f9fa;
-        border-radius: 5px;
-        padding: 20px;
-    }
-    .display-4 {
-        font-size: 2.5rem;
-        color: #343a40;
-    }
-    .table-responsive {
-        margin-top: 20px;
-    }
-    .table {
-        background-color: #ffffff;
-    }
-    .table thead.thead-dark th {
-        background-color: #343a40;
-        color: #fff;
-    }
-    .table tbody tr:hover {
-        background-color: #f1f1f1;
-    }
-</style>

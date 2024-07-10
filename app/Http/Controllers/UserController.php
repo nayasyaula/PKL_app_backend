@@ -6,6 +6,7 @@ use App\Models\AttendanceModel;
 use App\Models\ToDoList;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redirect;
 
 class UserController extends Controller
 {
@@ -35,41 +36,54 @@ class UserController extends Controller
         //
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function show($id)
     {
-        $user = User::findOrFail($id); 
+        $user = User::findOrFail($id);
         $attendance = AttendanceModel::where('user_id', $id)->get(); 
-        
         $todos = ToDoList::orderBy('date')->where('user_id', $id)->get()->groupBy('date');
 
         return view('show-user', compact('user', 'attendance', 'todos'));
     }
     
-
-    /**
-     * Show the form for editing the specified resource.
-     */
+    
     public function edit(string $id)
     {
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, string $id)
     {
         //
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
+    
     public function destroy(string $id)
     {
         //
+    }
+
+    public function updateStatus($id)
+    {
+        $todo = ToDoList::findOrFail($id);
+        $todo->status = $todo->status == 'Completed' ? 'Pending' : 'Completed';
+        if ($todo->status == 'Pending') {
+            $todo->pesan = null; 
+        }
+        $todo->save();
+
+        return redirect()->route('show.user', ['id' => $todo->user_id])->with('success', 'Status berhasil diupdate.');
+    }
+
+    public function pesan(Request $request, $id)
+    {
+        $request->validate([
+            'pesan' => 'required|string',
+        ]);
+
+        $todo = ToDoList::findOrFail($id);
+        $todo->pesan = $request->pesan;
+        $todo->save();
+
+        return redirect()->route('show.user', ['id' => $todo->user_id])->with('success', 'Pesan berhasil disimpan.');
     }
 }

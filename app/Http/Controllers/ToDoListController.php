@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AttendanceModel;
 use App\Models\ToDoList;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -34,18 +35,25 @@ class ToDoListController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'content' => 'required|string',
+            'content' => 'required|string|max:255',
             'status' => 'required|string',
             'date' => 'required|date',
+            'keterangan' => 'required|string',
         ]);
 
-        $data = $request->all();
-        $data['user_id'] = Auth::id(); // Mengambil id pengguna yang sedang masuk
-        ToDoList::create($data);
+        ToDoList::create([
+            'content' => $request->content,
+            'keterangan' => $request->keterangan,
+            'status' => $request->status,
+            'date' => $request->date,
+            'user_id' => auth()->user()->id,
+            'pesan' => null,
+        ]);
 
         return redirect()->route('ToDoList.index')
             ->with('success', 'To-Do List berhasil dibuat.');
     }
+
     /**
      * Show the form for editing the specified resource.
      */
@@ -58,13 +66,20 @@ class ToDoListController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'content' => 'required|string',
+            'content' => 'required|string|max:255',
             'status' => 'required|string',
             'date' => 'required|date',
+            'keterangan' => 'required|string',
         ]);
 
         $todolist = ToDoList::findOrFail($id);
-        $todolist->update($request->all());
+        $todolist->update([
+            'content' => $request->content,
+            'status' => $request->status,
+            'date' => $request->date,
+            'keterangan' => $request->keterangan,
+            'pesan' => $request->pesan,
+        ]);
 
         return redirect()->route('ToDoList.index')
             ->with('success', 'To-Do List berhasil diupdate.');
@@ -84,18 +99,28 @@ class ToDoListController extends Controller
         $todolist->delete();
 
         return redirect()->route('ToDoList.index')
-            ->with('success', 'To Do List berhasil dihapus.');
+            ->with('success', 'To-Do List berhasil dihapus.');
     }
 
-    /**
-     * Update the status of the specified resource.
-     */
     public function updateStatus($id)
     {
         $todo = ToDoList::find($id);
         $todo->status = $todo->status == 'Completed' ? 'Pending' : 'Completed';
         $todo->save();
 
-        return redirect()->route('ToDoList.index')->with('success', 'To Do List Berhasil Di Update.');
+        return redirect()->route('ToDoList.index')->with('success', 'Status berhasil diupdate.');
     }
+
+    public function pesan(Request $request, $id)
+    {
+        $request->validate([
+            'pesan' => 'required|string',
+        ]);
+
+        $todo = ToDoList::findOrFail($id);
+        $todo->pesan = $request->pesan;
+        $todo->save();
+
+        return redirect()->route('ToDoList.index')->with('success', 'Pesan berhasil disimpan.');
+    }   
 }

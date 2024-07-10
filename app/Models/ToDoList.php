@@ -13,7 +13,9 @@ class ToDoList extends Model
     protected $fillable = [
         'content',
         'status',
+        'keterangan',
         'date',    
+        'pesan',
         'user_id',
     ];
 

@@ -27,8 +27,10 @@
                                 <tr>
                                     <th>No</th>
                                     <th>Content</th>
+                                    <th>Keterangan</th>
                                     <th>Status</th>
                                     <th>Action</th>
+                                    <th>Pesan</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -36,6 +38,7 @@
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
                                         <td>{{ $todo->content }}</td>
+                                        <td>{{ $todo->keterangan }}</td>
                                         <td>
                                             <form action="{{ route('ToDoList.updateStatus', $todo->id) }}" method="POST" id="updateStatusForm{{ $todo->id }}">
                                                 @csrf
@@ -45,7 +48,7 @@
                                                     <label class="form-check-label">{{ $todo->status }}</label>
                                                 </div>
                                             </form>
-                                        </td>                                
+                                        </td>
                                         <td>
                                             <a href="{{ route('ToDoList.edit', $todo->id) }}" class="btn btn-primary btn-sm">Edit</a>
                                             <form action="{{ route('ToDoList.destroy', $todo->id) }}" method="POST" style="display: inline-block;">
@@ -54,6 +57,7 @@
                                                 <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Apakah kamu yakin untuk menghapus ini?')">Delete</button>
                                             </form>
                                         </td>
+                                        <td>{{ $todo->pesan }}</td>
                                     </tr>
                                 @endforeach
                             </tbody>
