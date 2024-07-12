@@ -50,4 +50,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(ToDoList::class);
     }
+
+    public function attendances()
+    {
+        return $this->hasMany(AttendanceModel::class);
+    }
 }
