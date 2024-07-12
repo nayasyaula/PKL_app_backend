@@ -144,33 +144,27 @@ class ToDoListController extends Controller
 
     // Adding the header
    // Tambahkan teks dengan format yang diinginkan
-$section->addText('SMK WIKRAMA BOGOR', ['bold' => true, 'size' => 14, 'color' => '4F4F4F', 'alignment' => 'center']);
-$section->addText('Jl. Raya Wangun Kelurahan Sindangsari Kecamatan Bogor Timur', ['size' => 10, 'color' => '4F4F4F', 'alignment' => 'center']);
-$section->addText('Telp/Fax. (0251) 8242411', ['size' => 10, 'color' => '4F4F4F', 'alignment' => 'center']);
-$section->addText('Email: prohumasi@smkwikrama.sch.id, Website: http://www.smk wikrama.sch.id', ['size' => 10, 'color' => '0000FF', 'alignment' => 'center']);
+   // Buat section untuk header
+    $header = $section->addHeader();
 
-// Tentukan koordinat untuk posisi gambar di sebelah kiri teks di tengah halaman
-$logoPath = 'assets/img/logo-wk.png'; // Ganti dengan path yang benar ke logo Anda
+    // Buat table untuk mengatur layout gambar dan teks
+    $table = $header->addTable();
+    $table->addRow();
 
-$section->addImage(
-    $logoPath,
-    array(
-        'width' => 50,  // Lebar gambar
-        'height' => 50, // Tinggi gambar
-        'wrappingStyle' => 'square', // Gaya pembungkus (misalnya, persegi)
-        'positioning' => 'absolute',
-        'posHorizontal' => 'left', // Posisi horizontal di sebelah kiri
-        'posVertical' => 'top', // Posisi vertikal di bagian atas halaman
-        'marginTop' => 10,  // Jarak dari atas
-        'marginLeft' => 0, // Jarak dari kiri
-        'marginRight' => 0, // Jarak dari kanan
-        'marginBottom' => 0 // Jarak dari bawah
-    )
-);
+    // Kolom pertama untuk gambar
+    $imageCell = $table->addCell(2000); // Sesuaikan ukuran lebar cell untuk gambar
+    $imageCell->addImage('../public/assets/img/logo-wk.png', array('width' => 80, 'height' => 80));
 
+    // Kolom kedua untuk teks
+    $textCell = $table->addCell();
+    $textCell->addText('SMK WIKRAMA BOGOR', array('bold' => true, 'size' => 10));
+    $textCell->addText('Jl. Raya Wangun Kelurahan Sindangsari Kecamatan Bogor Timur', array('size' => 8));
+    $textCell->addText('Telp/Fax. (0251) 8242411', array('size' => 10));
+    $textCell->addText('Email: prohumasi@smkwikrama.sch.id, Website: http://www.smkwikrama.sch.id', array('size' => 8));
 
-$section->addTextBreak(1);
-
+    // Atur alignment untuk cell
+    $imageCell->addTextRun()->addText('', null, array('alignment' => 'right'));
+    $textCell->addTextRun()->addText('', null, array('alignment' => 'left'));
 
     // Adding the report title
     $section->addText('LAPORAN KEGIATAN HARIAN', 'headerStyle', 'centered');

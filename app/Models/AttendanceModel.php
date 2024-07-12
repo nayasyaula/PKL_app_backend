@@ -16,16 +16,9 @@ class AttendanceModel extends Model
         'user_id'
     ];
 
-    public function user()
-    {
+    public function user() {
         return $this->belongsTo(User::class, 'user_id', 'id');
     }
-
-    public function todolist()
-    {
-        return $this->hasMany(ToDoList::class, 'attendance_id', 'id');
-    }
-
 
     
 }
