@@ -39,4 +39,6 @@ Route::middleware(['auth'])->group(function () {
     
     Route::put('/todolist/{id}/updateStatus', [ToDoListController::class, 'updateStatus'])->name('ToDoList.updateStatus');
     Route::post('/todolist/{id}/pesan', [ToDoListController::class, 'pesan'])->name('ToDoList.pesan');
+
+    Route::get('/create-document', [ToDoListController::class, 'createDocument'])->name('word');
 });
