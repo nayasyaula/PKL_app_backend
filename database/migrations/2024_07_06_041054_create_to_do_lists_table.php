@@ -18,9 +18,9 @@ return new class extends Migration
             $table->date('date');
             $table->bigInteger('user_id');
             $table->text('keterangan'); 
-            $table->text('pesan')->nullable(); 
+            $table->text('pesan')->nullable();
+            $table->string('attendance_id');
             $table->timestamps();
-
            
         });
     }

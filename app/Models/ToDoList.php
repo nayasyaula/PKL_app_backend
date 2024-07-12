@@ -17,9 +17,14 @@ class ToDoList extends Model
         'date',    
         'pesan',
         'user_id',
+        'attendance_id'
     ];
 
     public function user() {
         return $this->belongsTo(User::class, 'user_id', 'id');
+    }
+
+    public function toDoList() {
+        return $this->belongsTo(ToDoList::class, 'attendance_id', 'id');
     }
 }
