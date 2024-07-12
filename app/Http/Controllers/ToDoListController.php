@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\AttendanceModel;
 use App\Models\ToDoList;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -36,26 +37,41 @@ class ToDoListController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-    {
-        $request->validate([
-            'content' => 'required|string|max:255',
-            'status' => 'required|string',
-            'date' => 'required|date',
-            'keterangan' => 'required|string',
-        ]);
+{
+    $request->validate([
+        'content' => 'required|string|max:255',
+        'status' => 'required|string',
+        'date' => 'required|date',
+        'keterangan' => 'required|string',
+    ]);
 
-        ToDoList::create([
-            'content' => $request->content,
-            'keterangan' => $request->keterangan,
-            'status' => $request->status,
-            'date' => $request->date,
-            'user_id' => auth()->user()->id,
-            'pesan' => null,
-        ]);
+    $userId = Auth::id();
 
-        return redirect()->route('ToDoList.index')
-            ->with('success', 'To-Do List berhasil dibuat.');
-    }
+    $todayDate = Carbon::today()->setTimezone('Asia/Jakarta')->toDateString();
+
+    // Ambil satu entitas Attendance sesuai dengan user_id dan tanggal hari ini
+    $attendance = AttendanceModel::where('user_id', $userId)
+                                  ->whereDate('created_at', $todayDate)
+                                  ->first();
+
+    // Pastikan attendance ditemukan sebelum mencoba mengambil id-nya
+    $attendanceId = $attendance ? $attendance->id : null;
+
+    // Simpan data ToDoList
+    ToDoList::create([
+        'content' => $request->content,
+        'keterangan' => $request->keterangan,
+        'status' => $request->status,
+        'date' => $request->date,
+        'user_id' => $userId,
+        'attendance_id' => $attendanceId, // Gunakan id attendance yang sudah ditemukan
+        'pesan' => null,
+    ]);
+
+    return redirect()->route('ToDoList.index')
+                     ->with('success', 'To-Do List berhasil dibuat.');
+}
+
 
     /**
      * Show the form for editing the specified resource.
