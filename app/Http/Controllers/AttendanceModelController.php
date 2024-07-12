@@ -190,10 +190,13 @@ class AttendanceModelController extends Controller
         $table->addCell(2000, $cellStyle)->addText($item->status, 'contentStyle', 'centered');
     }
 
-    // Space for signature
     $section->addTextBreak(1);
-    $section->addText('Instruktur/Pembimbing Industri', 'contentStyle', 'right');
-    $section->addTextBreak(2);
+    // Adding instructor's signature part
+        $section->addText('.......................................... 2024', array('bold' => true), array('alignment' => 'right', 'size'=>'8'));
+        $section->addText('Instruktur/Pembimbing Industri', array('bold' => true), array('alignment' => 'right', 'size'=>'8'));
+        $section->addTextBreak(3);
+        $section->addText('(................................................)', array('bold' => true), array('alignment' => 'right', 'size'=>'8'));
+
 
     // Save the file
     $fileName = 'Laporan_PKL_' . now()->format('Y-m-d_H-i-s') . '.docx';
