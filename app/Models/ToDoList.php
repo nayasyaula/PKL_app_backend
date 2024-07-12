@@ -24,7 +24,7 @@ class ToDoList extends Model
         return $this->belongsTo(User::class, 'user_id', 'id');
     }
 
-    public function toDoList() {
-        return $this->belongsTo(ToDoList::class, 'attendance_id', 'id');
+    public function attendance() {
+        return $this->belongsTo(AttendanceModel::class, 'attendance_id', 'id');
     }
 }
