@@ -26,7 +26,11 @@
         </form>
     </div>
 
+    <a href="{{ route('word.attendance') }}" class="btn btn-primary mt-3">Expor Jurnal Kehadiran</a>
+    <br>
+
     <div class="table-responsive">
+        <br>
         <table class="table table-bordered table-hover">
             <thead class="thead-dark">
                 <tr>
