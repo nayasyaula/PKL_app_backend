@@ -100,7 +100,7 @@ class AttendanceModelController extends Controller
         //
     }
 
-    public function createDocument()
+    public function createDocument()    
 {
     $phpWord = new PhpWord();
 
