@@ -104,23 +104,45 @@ class AttendanceModelController extends Controller
     {
         $phpWord = new PhpWord();
 
+        // Setting font styles
+        $phpWord->addFontStyle('headerStyle', ['bold' => true, 'size' => 12]);
+        $phpWord->addFontStyle('contentStyle', ['size' => 10]);
+
+        // Setting paragraph styles
+        $phpWord->addParagraphStyle('centered', ['alignment' => 'center']);
+        $phpWord->addParagraphStyle('left', ['alignment' => 'left']);
+        
         // Adding a section
         $section = $phpWord->addSection();
 
-        // Adding header information
+        // Adding the header
+        // Tambahkan teks dengan format yang diinginkan
+        // Buat section untuk header
         $header = $section->addHeader();
-        $header->addImage('../public/img/wikrama-logo.png', array('width' => 80, 'height' => 80, 'alignment' => 'center'));
-        $header->addText('SMK WIKRAMA BOGOR', array('bold' => true, 'size' => 16), array('alignment' => 'center'));
-        $header->addText('Jl. Raya Wangun Kelurahan Sindangsari Kecamatan Bogor Timur', array('size' => 12), array('alignment' => 'center'));
-        $header->addText('Telp/Fax. (0251) 8242411', array('size' => 12), array('alignment' => 'center'));
-        $header->addText('Email: prohumasi@smkwikrama.sch.id, Website: http://www.smkwikrama.sch.id', array('size' => 12), array('alignment' => 'center'));
 
-        // Add a line break
-        $section->addTextBreak(1);
+        // Buat table untuk mengatur layout gambar dan teks
+        $table = $header->addTable();
+        $table->addRow();
+
+        // Kolom pertama untuk gambar
+        $imageCell = $table->addCell(2000); // Sesuaikan ukuran lebar cell untuk gambar
+        $imageCell->addImage('../public/assets/img/logo-wk.png', array('width' => 80, 'height' => 80));
+
+        // Kolom kedua untuk teks
+        $textCell = $table->addCell();
+        $textCell->addText('SMK WIKRAMA BOGOR', array('bold' => true, 'size' => 10));
+        $textCell->addText('Jl. Raya Wangun Kelurahan Sindangsari Kecamatan Bogor Timur', array('size' => 8));
+        $textCell->addText('Telp/Fax. (0251) 8242411', array('size' => 10));
+        $textCell->addText('Email: prohumasi@smkwikrama.sch.id, Website: http://www.smkwikrama.sch.id', array('size' => 8));
+
+        // Atur alignment untuk cell
+        $imageCell->addTextRun()->addText('', null, array('alignment' => 'right'));
+        $textCell->addTextRun()->addText('', null, array('alignment' => 'left'));
 
         // Adding title
         $section->addText('LAPORAN KEHADIRAN SISWA PKL DI INSTANSI/PERUSAHAAN', array('bold' => true, 'size' => 14), array('alignment' => 'center'));
-
+        $section->addTextBreak(1);
+        
         // Adding student information
         $section->addText('Nama Peserta Didik: ', array('bold' => true));
         $section->addText('Industri Tempat PKL: ', array('bold' => true));

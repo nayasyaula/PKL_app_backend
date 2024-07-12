@@ -68,8 +68,7 @@ class ToDoListController extends Controller
         'pesan' => null,
     ]);
 
-    return redirect()->route('ToDoList.index')
-                     ->with('success', 'To-Do List berhasil dibuat.');
+    return redirect()->route('ToDoList.index')->with('success', 'To-Do List berhasil dibuat.');
 }
 
 
