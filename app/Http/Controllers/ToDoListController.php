@@ -7,6 +7,9 @@ use App\Models\ToDoList;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use PhpOffice\PhpWord\PhpWord;
+use PhpOffice\PhpWord\IOFactory;
+use Illuminate\Support\Facades\Response;
 
 class ToDoListController extends Controller
 {
@@ -123,4 +126,18 @@ class ToDoListController extends Controller
 
         return redirect()->route('ToDoList.index')->with('success', 'Pesan berhasil disimpan.');
     }   
+
+    public function createDocument()
+    {
+        $phpWord = new PhpWord();
+        $section = $phpWord->addSection();
+        $section->addText('HAIIIIIIIIIIIII');
+
+        $objWriter = IOFactory::createWriter($phpWord, 'Word2007');
+
+        $filePath = storage_path('app/public/helloWorld.docx');
+        $objWriter->save($filePath);
+
+        return Response::download($filePath);
+    }
 }
