@@ -148,7 +148,9 @@ class ToDoListController extends Controller
 
     // Setting font styles
     $phpWord->addFontStyle('headerStyle', ['bold' => true, 'size' => 12]);
+    $phpWord->addFontStyle('headerRowStyle', ['bold' => true, 'size' => 10]); // Ukuran font header row diperkecil dan ditambahkan bold
     $phpWord->addFontStyle('contentStyle', ['size' => 10]);
+    $phpWord->addFontStyle('smallContentStyle', ['size' => 8]); 
 
     // Setting paragraph styles
     $phpWord->addParagraphStyle('centered', ['alignment' => 'center']);
@@ -157,9 +159,7 @@ class ToDoListController extends Controller
     // Adding a section
     $section = $phpWord->addSection();
 
-    // Adding the header
-   // Tambahkan teks dengan format yang diinginkan
-   // Buat section untuk header
+    // Buat section untuk header
     $header = $section->addHeader();
 
     // Buat table untuk mengatur layout gambar dan teks
@@ -168,18 +168,18 @@ class ToDoListController extends Controller
 
     // Kolom pertama untuk gambar
     $imageCell = $table->addCell(2000); // Sesuaikan ukuran lebar cell untuk gambar
-    $imageCell->addImage('../public/assets/img/logo-wk.png', array('width' => 80, 'height' => 80));
+    $imageCell->addImage('../public/assets/img/logo-wk.png', ['width' => 80, 'height' => 80]);
 
     // Kolom kedua untuk teks
     $textCell = $table->addCell();
-    $textCell->addText('SMK WIKRAMA BOGOR', array('bold' => true, 'size' => 10));
-    $textCell->addText('Jl. Raya Wangun Kelurahan Sindangsari Kecamatan Bogor Timur', array('size' => 8));
-    $textCell->addText('Telp/Fax. (0251) 8242411', array('size' => 10));
-    $textCell->addText('Email: prohumasi@smkwikrama.sch.id, Website: http://www.smkwikrama.sch.id', array('size' => 8));
+    $textCell->addText('SMK WIKRAMA BOGOR', ['bold' => true, 'size' => 10]);
+    $textCell->addText('Jl. Raya Wangun Kelurahan Sindangsari Kecamatan Bogor Timur', ['size' => 8]);
+    $textCell->addText('Telp/Fax. (0251) 8242411', ['size' => 10]);
+    $textCell->addText('Email: prohumasi@smkwikrama.sch.id, Website: http://www.smkwikrama.sch.id', ['size' => 8]);
 
     // Atur alignment untuk cell
-    $imageCell->addTextRun()->addText('', null, array('alignment' => 'right'));
-    $textCell->addTextRun()->addText('', null, array('alignment' => 'left'));
+    $imageCell->addTextRun()->addText('', null, ['alignment' => 'right']);
+    $textCell->addTextRun()->addText('', null, ['alignment' => 'left']);
 
     // Adding the report title
     $section->addText('LAPORAN KEGIATAN HARIAN', 'headerStyle', 'centered');
@@ -192,9 +192,9 @@ class ToDoListController extends Controller
 
     // Adding the details
     $section->addText('Nama Peserta Didik     : ' . $user->name, 'contentStyle', 'left');
-    $section->addText('Industri Tempat PKL    :', 'contentStyle', 'left');
-    $section->addText('Nama Instruktur/Pembimbing Industri :', 'contentStyle', 'left');
-    $section->addText('Nama Guru Pembimbing   :', 'contentStyle', 'left');
+    $section->addText('Industri Tempat PKL    : PT Mitra Global Informatika', 'contentStyle', 'left');
+    $section->addText('Nama Instruktur/Pembimbing Industri : Pak Andhira', 'contentStyle', 'left');
+    $section->addText('Nama Guru Pembimbing   : Pak Hendri', 'contentStyle', 'left');
     $section->addTextBreak(1);
 
     // Adding the table
@@ -216,19 +216,29 @@ class ToDoListController extends Controller
 
     // Header row
     $table->addRow();
-    $table->addCell(500, $cellStyle)->addText('No.', 'headerStyle', 'centered');
-    $table->addCell(2000, $cellStyle)->addText('Hari/Tanggal', 'headerStyle', 'centered');
-    $table->addCell(4000, $cellStyle)->addText('Unit Kerja/Pekerjaan', 'headerStyle', 'centered');
-    $table->addCell(2000, $cellStyle)->addText('Catatan*', 'headerStyle', 'centered');
+    $table->addCell(500, $cellStyle)->addText('No.', 'headerRowStyle', 'centered');
+    $table->addCell(2000, $cellStyle)->addText('Hari/Tanggal', 'headerRowStyle', 'centered');
+    $table->addCell(4000, $cellStyle)->addText('Unit Kerja/Pekerjaan', 'headerRowStyle', 'centered');
+    $table->addCell(2000, $cellStyle)->addText('Catatan', 'headerRowStyle', 'centered');
 
     // Data rows
     foreach ($todos as $index => $todo) {
         $table->addRow();
         $table->addCell(500, $cellStyle)->addText($index + 1, 'contentStyle', 'centered');
-        $table->addCell(2000, $cellStyle)->addText($todo->date->format('d-m-Y'), 'contentStyle', 'centered');
+        // Convert the date string to DateTime object before formatting
+        $date = new \DateTime($todo->date);
+        $table->addCell(2000, $cellStyle)->addText($date->format('d-m-Y'), 'contentStyle', 'centered');
         $table->addCell(4000, $cellStyle)->addText($todo->content, 'contentStyle', 'centered');
-        $table->addCell(2000, $cellStyle)->addText($todo->keterangan, 'contentStyle', 'centered');
+        $table->addCell(2000, $cellStyle)->addText($todo->pesan, 'contentStyle', 'centered');
     }
+
+    $section->addTextBreak(1);
+    // Adding instructor's signature part
+        $section->addText('.......................................... 2024', array('bold' => true), array('alignment' => 'right', 'size'=>'8'));
+        $section->addText('Instruktur/Pembimbing Industri', array('bold' => true), array('alignment' => 'right', 'size'=>'8'));
+        $section->addTextBreak(3);
+        $section->addText('(................................................)', array('bold' => true), array('alignment' => 'right', 'size'=>'8'));
+
 
     // Save the file
     $fileName = 'Laporan_PKL_' . now()->format('Y-m-d_H-i-s') . '.docx';
@@ -239,4 +249,5 @@ class ToDoListController extends Controller
 
     return response()->download($filePath)->deleteFileAfterSend(true);
 }
+
 }
