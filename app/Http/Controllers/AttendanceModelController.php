@@ -19,7 +19,6 @@ class AttendanceModelController extends Controller
     public function index(Request $request)
     {
         $userId = Auth::id();
-        echo ($userId);
 
         $todayDate = Carbon::today()->setTimezone('Asia/Jakarta')->toDateString();
 
