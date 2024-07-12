@@ -9,9 +9,9 @@
     </div>
     <div class="card">
         <div class="card-header d-flex justify-content-end">
-            <a href="{{ route('ToDoList.create') }}" class="btn btn-primary me-5">Tambah</a>
-            <a href="{{ route('word.tdl') }}" class="btn btn-primary ms-5">Expor To-do List</a>
-        </div> 
+            <a href="{{ route('ToDoList.create') }}" class="btn btn-primary mt-3 mr-2">Tambah</a>
+            <a href="{{ route('word.tdl') }}" class="btn btn-primary mt-3">Expor To-do List</a>
+        </div>        
         <div class="card-body">
             @if (session('success'))
                 <div class="alert alert-success">{{ session('success') }}</div>
@@ -31,7 +31,7 @@
                                     <th>Keterangan</th>
                                     <th>Status</th>
                                     <th>Action</th>
-                                    <th>Catatan untuk siswa</th>
+                                    <th>Catatan dari pembimbing</th>
                                 </tr>
                             </thead>
                             <tbody>
