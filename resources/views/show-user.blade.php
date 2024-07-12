@@ -54,7 +54,7 @@
                                         <th>Keterangan</th>
                                         <th>Status</th>
                                         <th>Action</th>
-                                        <th>Pesan</th>
+                                        <th>Catatan untuk siswa</th>
                                     </tr>
                                 </thead>
                                 <tbody>
