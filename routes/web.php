@@ -21,6 +21,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/pages', [AttendanceModelController::class, 'index'])->name('pages');
     Route::post('/store', [AttendanceModelController::class, 'store'])->name('store');
     Route::patch('/update/{id}', [AttendanceModelController::class, 'update'])->name('update');
+    Route::get('/attendance/create-document', [AttendanceModelController::class, 'createDocument'])->name('word.attendance');
 
     Route::get('/user', [UserController::class, 'index'])->name('user.index');
     Route::get('/user/{id}', [UserController::class, 'show'])->name('show.user');
@@ -40,5 +41,5 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/todolist/{id}/updateStatus', [ToDoListController::class, 'updateStatus'])->name('ToDoList.updateStatus');
     Route::post('/todolist/{id}/pesan', [ToDoListController::class, 'pesan'])->name('ToDoList.pesan');
 
-    Route::get('/create-document', [ToDoListController::class, 'createDocument'])->name('word');
+    Route::get('/create-document', [ToDoListController::class, 'createDocument'])->name('word.tdl');
 });
