@@ -143,111 +143,110 @@ class ToDoListController extends Controller
     }   
 
     public function createDocument()
-{
-    $phpWord = new PhpWord();
+    {
+        $phpWord = new PhpWord();
 
-    // Setting font styles
-    $phpWord->addFontStyle('headerStyle', ['bold' => true, 'size' => 12]);
-    $phpWord->addFontStyle('headerRowStyle', ['bold' => true, 'size' => 10]); // Ukuran font header row diperkecil dan ditambahkan bold
-    $phpWord->addFontStyle('contentStyle', ['size' => 10]);
-    $phpWord->addFontStyle('smallContentStyle', ['size' => 8]); 
+        // Setting font styles
+        $phpWord->addFontStyle('headerStyle', ['bold' => true, 'size' => 12]);
+        $phpWord->addFontStyle('headerRowStyle', ['bold' => true, 'size' => 10]); // Ukuran font header row diperkecil dan ditambahkan bold
+        $phpWord->addFontStyle('contentStyle', ['size' => 10]);
+        $phpWord->addFontStyle('smallContentStyle', ['size' => 8]); 
 
-    // Setting paragraph styles
-    $phpWord->addParagraphStyle('centered', ['alignment' => 'center']);
-    $phpWord->addParagraphStyle('left', ['alignment' => 'left']);
-    
-    // Adding a section
-    $section = $phpWord->addSection();
+        // Setting paragraph styles
+        $phpWord->addParagraphStyle('centered', ['alignment' => 'center']);
+        $phpWord->addParagraphStyle('left', ['alignment' => 'left']);
+        
+        // Adding a section
+        $section = $phpWord->addSection();
 
-    // Buat section untuk header
-    $header = $section->addHeader();
+        // Buat section untuk header
+        $header = $section->addHeader();
 
-    // Buat table untuk mengatur layout gambar dan teks
-    $table = $header->addTable();
-    $table->addRow();
-
-    // Kolom pertama untuk gambar
-    $imageCell = $table->addCell(2000); // Sesuaikan ukuran lebar cell untuk gambar
-    $imageCell->addImage('../public/assets/img/logo-wk.png', ['width' => 80, 'height' => 80]);
-
-    // Kolom kedua untuk teks
-    $textCell = $table->addCell();
-    $textCell->addText('SMK WIKRAMA BOGOR', ['bold' => true, 'size' => 10]);
-    $textCell->addText('Jl. Raya Wangun Kelurahan Sindangsari Kecamatan Bogor Timur', ['size' => 8]);
-    $textCell->addText('Telp/Fax. (0251) 8242411', ['size' => 10]);
-    $textCell->addText('Email: prohumasi@smkwikrama.sch.id, Website: http://www.smkwikrama.sch.id', ['size' => 8]);
-
-    // Atur alignment untuk cell
-    $imageCell->addTextRun()->addText('', null, ['alignment' => 'right']);
-    $textCell->addTextRun()->addText('', null, ['alignment' => 'left']);
-
-    // Adding the report title
-    $section->addText('LAPORAN KEGIATAN HARIAN', 'headerStyle', 'centered');
-    $section->addText('PESERTA PRAKTIK KERJA LAPANGAN (PKL) TAHUN 2024', 'headerStyle', 'centered');
-    $section->addTextBreak(1);
-
-    // Fetching data from the database
-    $user = Auth::user(); // Assuming the user is logged in
-    $todos = ToDoList::where('user_id', $user->id)->orderBy('date')->get();
-
-    // Adding the details
-    $section->addText('Nama Peserta Didik     : ' . $user->name, 'contentStyle', 'left');
-    $section->addText('Industri Tempat PKL    : PT Mitra Global Informatika', 'contentStyle', 'left');
-    $section->addText('Nama Instruktur/Pembimbing Industri : Pak Andhira', 'contentStyle', 'left');
-    $section->addText('Nama Guru Pembimbing   : Pak Hendri', 'contentStyle', 'left');
-    $section->addTextBreak(1);
-
-    // Adding the table
-    $tableStyle = [
-        'borderSize' => 6,
-        'borderColor' => '000000',
-        'cellMargin' => 50,
-    ];
-    $firstRowStyle = [
-        'borderBottomSize' => 18,
-        'borderBottomColor' => '000000',
-    ];
-    $cellStyle = [
-        'valign' => 'center',
-    ];
-
-    $phpWord->addTableStyle('tableStyle', $tableStyle, $firstRowStyle);
-    $table = $section->addTable('tableStyle');
-
-    // Header row
-    $table->addRow();
-    $table->addCell(500, $cellStyle)->addText('No.', 'headerRowStyle', 'centered');
-    $table->addCell(2000, $cellStyle)->addText('Hari/Tanggal', 'headerRowStyle', 'centered');
-    $table->addCell(4000, $cellStyle)->addText('Unit Kerja/Pekerjaan', 'headerRowStyle', 'centered');
-    $table->addCell(2000, $cellStyle)->addText('Catatan', 'headerRowStyle', 'centered');
-
-    // Data rows
-    foreach ($todos as $index => $todo) {
+        // Buat table untuk mengatur layout gambar dan teks
+        $table = $header->addTable();
         $table->addRow();
-        $table->addCell(500, $cellStyle)->addText($index + 1, 'contentStyle', 'centered');
-        // Convert the date string to DateTime object before formatting
-        $date = new \DateTime($todo->date);
-        $table->addCell(2000, $cellStyle)->addText($date->format('d-m-Y'), 'contentStyle', 'centered');
-        $table->addCell(4000, $cellStyle)->addText($todo->content, 'contentStyle', 'centered');
-        $table->addCell(2000, $cellStyle)->addText($todo->pesan, 'contentStyle', 'centered');
+
+        // Kolom pertama untuk gambar
+        $imageCell = $table->addCell(2000); // Sesuaikan ukuran lebar cell untuk gambar
+        $imageCell->addImage('../public/assets/img/logo-wk.png', ['width' => 80, 'height' => 80]);
+
+        // Kolom kedua untuk teks
+        $textCell = $table->addCell();
+        $textCell->addText('SMK WIKRAMA BOGOR', ['bold' => true, 'size' => 10]);
+        $textCell->addText('Jl. Raya Wangun Kelurahan Sindangsari Kecamatan Bogor Timur', ['size' => 8]);
+        $textCell->addText('Telp/Fax. (0251) 8242411', ['size' => 10]);
+        $textCell->addText('Email: prohumasi@smkwikrama.sch.id, Website: http://www.smkwikrama.sch.id', ['size' => 8]);
+
+        // Atur alignment untuk cell
+        $imageCell->addTextRun()->addText('', null, ['alignment' => 'right']);
+        $textCell->addTextRun()->addText('', null, ['alignment' => 'left']);
+
+        // Adding the report title
+        $section->addText('LAPORAN KEGIATAN HARIAN', 'headerStyle', 'centered');
+        $section->addText('PESERTA PRAKTIK KERJA LAPANGAN (PKL) TAHUN 2024', 'headerStyle', 'centered');
+        $section->addTextBreak(1);
+
+        // Fetching data from the database
+        $user = Auth::user(); // Assuming the user is logged in
+        $todos = ToDoList::where('user_id', $user->id)->orderBy('date')->get();
+
+        // Adding the details
+        $section->addText('Nama Peserta Didik     : ' . $user->name, 'contentStyle', 'left');
+        $section->addText('Industri Tempat PKL    : PT Mitra Global Informatika', 'contentStyle', 'left');
+        $section->addText('Nama Instruktur/Pembimbing Industri : Pak Andhira', 'contentStyle', 'left');
+        $section->addText('Nama Guru Pembimbing   : Pak Hendri', 'contentStyle', 'left');
+        $section->addTextBreak(1);
+
+        // Adding the table
+        $tableStyle = [
+            'borderSize' => 6,
+            'borderColor' => '000000',
+            'cellMargin' => 50,
+        ];
+        $firstRowStyle = [
+            'borderBottomSize' => 18,
+            'borderBottomColor' => '000000',
+        ];
+        $cellStyle = [
+            'valign' => 'center',
+        ];
+
+        $phpWord->addTableStyle('tableStyle', $tableStyle, $firstRowStyle);
+        $table = $section->addTable('tableStyle');
+
+        // Header row
+        $table->addRow();
+        $table->addCell(500, $cellStyle)->addText('No.', 'headerRowStyle', 'centered');
+        $table->addCell(2000, $cellStyle)->addText('Hari/Tanggal', 'headerRowStyle', 'centered');
+        $table->addCell(4000, $cellStyle)->addText('Unit Kerja/Pekerjaan', 'headerRowStyle', 'centered');
+        $table->addCell(2000, $cellStyle)->addText('Catatan', 'headerRowStyle', 'centered');
+
+        // Data rows
+        foreach ($todos as $index => $todo) {
+            $table->addRow();
+            $table->addCell(500, $cellStyle)->addText($index + 1, 'contentStyle', 'centered');
+            // Convert the date string to DateTime object before formatting
+            $date = new \DateTime($todo->date);
+            $table->addCell(2000, $cellStyle)->addText($date->format('d-m-Y'), 'contentStyle', 'centered');
+            $table->addCell(4000, $cellStyle)->addText($todo->content, 'contentStyle', 'centered');
+            $table->addCell(2000, $cellStyle)->addText($todo->pesan, 'contentStyle', 'centered');
+        }
+
+        $section->addTextBreak(1);
+        // Adding instructor's signature part
+            $section->addText('.......................................... 2024', array('bold' => true), array('alignment' => 'right', 'size'=>'8'));
+            $section->addText('Instruktur/Pembimbing Industri', array('bold' => true), array('alignment' => 'right', 'size'=>'8'));
+            $section->addTextBreak(3);
+            $section->addText('(................................................)', array('bold' => true), array('alignment' => 'right', 'size'=>'8'));
+
+        // Save the file
+        $fileName = 'Laporan_PKL_' . now()->format('Y-m-d_H-i-s') . '.docx';
+        $filePath = storage_path('app/public/' . $fileName);
+
+        $objWriter = IOFactory::createWriter($phpWord, 'Word2007');
+        $objWriter->save($filePath);
+
+        return response()->download($filePath)->deleteFileAfterSend(true);
     }
-
-    $section->addTextBreak(1);
-    // Adding instructor's signature part
-        $section->addText('.......................................... 2024', array('bold' => true), array('alignment' => 'right', 'size'=>'8'));
-        $section->addText('Instruktur/Pembimbing Industri', array('bold' => true), array('alignment' => 'right', 'size'=>'8'));
-        $section->addTextBreak(3);
-        $section->addText('(................................................)', array('bold' => true), array('alignment' => 'right', 'size'=>'8'));
-
-
-    // Save the file
-    $fileName = 'Laporan_PKL_' . now()->format('Y-m-d_H-i-s') . '.docx';
-    $filePath = storage_path('app/public/' . $fileName);
-
-    $objWriter = IOFactory::createWriter($phpWord, 'Word2007');
-    $objWriter->save($filePath);
-
-    return response()->download($filePath)->deleteFileAfterSend(true);
-}
 
 }
