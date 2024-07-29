@@ -11,9 +11,6 @@
         <div class="card-header d-flex justify-content-end">
             <a href="{{ route('ToDoList.create') }}" class="btn btn-primary me-3">Tambah</a>
             <a href="{{ route('word.tdl') }}" class="btn btn-primary me-3">Expor To-do List</a>
-        </div> 
-            <a href="{{ route('ToDoList.create') }}" class="btn btn-primary mt-3 mr-2">Tambah</a>
-            <a href="{{ route('word.tdl') }}" class="btn btn-primary mt-3">Expor To-do List</a>
         </div>        
         <div class="card-body">
             @if (session('success'))
