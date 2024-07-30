@@ -13,22 +13,23 @@ class Kernel extends HttpKernel
      *
      * @var array<int, class-string|string>
      */
-    protected $middleware = [
-    // other middleware
+    // app/Http/Kernel.php
+protected $middleware = [
     \App\Http\Middleware\CorsMiddleware::class,
+    // other middleware
 ];
 
 protected $middlewareGroups = [
     'web' => [
-        // other middleware
         \App\Http\Middleware\CorsMiddleware::class,
+        // other middleware
     ],
-
     'api' => [
-        // other middleware
         \App\Http\Middleware\CorsMiddleware::class,
+        // other middleware
     ],
 ];
+
 
     /**
      * The application's route middleware.
