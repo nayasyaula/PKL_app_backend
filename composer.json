@@ -8,6 +8,7 @@
         "php": "^8.2",
         "jeroennoten/laravel-adminlte": "^3.12",
         "laravel/framework": "^11.9",
+        "laravel/sanctum": "*",
         "laravel/tinker": "^2.9",
         "laravel/ui": "^4.5",
         "phpoffice/phpword": "^1.2"
