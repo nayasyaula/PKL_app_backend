@@ -23,6 +23,21 @@ class ToDoListController extends Controller
 
         return view('ToDoList.index', compact('todos'));
     }
+    public function test(Request $request)
+    {
+        $user = $request->user();
+        Log::info('User authenticated', ['user' => $user]);
+
+        // Ambil userId dari pengguna
+        $userId = $user->id;
+        Log::info('user id: ' . $userId);
+
+        // Ambil todos berdasarkan userId
+        $todos = ToDoList::where('user_id', $userId)->get();
+
+        // Kembalikan respons JSON atau view
+        return response()->json(['todos' => $todos]);
+    }
 
 
     /**
@@ -37,39 +52,39 @@ class ToDoListController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-{
-    $request->validate([
-        'content' => 'required|string|max:255',
-        'status' => 'required|string',
-        'date' => 'required|date',
-        'keterangan' => 'required|string',
-    ]);
+    {
+        $request->validate([
+            'content' => 'required|string|max:255',
+            'status' => 'required|string',
+            'date' => 'required|date',
+            'keterangan' => 'required|string',
+        ]);
 
-    $userId = Auth::id();
+        $userId = Auth::id();
 
-    $todayDate = Carbon::today()->setTimezone('Asia/Jakarta')->toDateString();
+        $todayDate = Carbon::today()->setTimezone('Asia/Jakarta')->toDateString();
 
-    // Ambil satu entitas Attendance sesuai dengan user_id dan tanggal hari ini
-    $attendance = AttendanceModel::where('user_id', $userId)
-                                  ->whereDate('created_at', $todayDate)
-                                  ->first();
+        // Ambil satu entitas Attendance sesuai dengan user_id dan tanggal hari ini
+        $attendance = AttendanceModel::where('user_id', $userId)
+            ->whereDate('created_at', $todayDate)
+            ->first();
 
-    // Pastikan attendance ditemukan sebelum mencoba mengambil id-nya
-    $attendanceId = $attendance ? $attendance->id : null;
+        // Pastikan attendance ditemukan sebelum mencoba mengambil id-nya
+        $attendanceId = $attendance ? $attendance->id : null;
 
-    // Simpan data ToDoList
-    ToDoList::create([
-        'content' => $request->content,
-        'keterangan' => $request->keterangan,
-        'status' => $request->status,
-        'date' => $request->date,
-        'user_id' => $userId,
-        'attendance_id' => $attendanceId, // Gunakan id attendance yang sudah ditemukan
-        'pesan' => null,
-    ]);
+        // Simpan data ToDoList
+        ToDoList::create([
+            'content' => $request->content,
+            'keterangan' => $request->keterangan,
+            'status' => $request->status,
+            'date' => $request->date,
+            'user_id' => $userId,
+            'attendance_id' => $attendanceId, // Gunakan id attendance yang sudah ditemukan
+            'pesan' => null,
+        ]);
 
-    return redirect()->route('ToDoList.index')->with('success', 'To-Do List berhasil dibuat.');
-}
+        return redirect()->route('ToDoList.index')->with('success', 'To-Do List berhasil dibuat.');
+    }
 
 
     /**
@@ -140,7 +155,7 @@ class ToDoListController extends Controller
         $todo->save();
 
         return redirect()->route('ToDoList.index')->with('success', 'Pesan berhasil disimpan.');
-    }   
+    }
 
     public function createDocument()
     {
@@ -150,12 +165,12 @@ class ToDoListController extends Controller
         $phpWord->addFontStyle('headerStyle', ['bold' => true, 'size' => 12]);
         $phpWord->addFontStyle('headerRowStyle', ['bold' => true, 'size' => 10]); // Ukuran font header row diperkecil dan ditambahkan bold
         $phpWord->addFontStyle('contentStyle', ['size' => 10]);
-        $phpWord->addFontStyle('smallContentStyle', ['size' => 8]); 
+        $phpWord->addFontStyle('smallContentStyle', ['size' => 8]);
 
         // Setting paragraph styles
         $phpWord->addParagraphStyle('centered', ['alignment' => 'center']);
         $phpWord->addParagraphStyle('left', ['alignment' => 'left']);
-        
+
         // Adding a section
         $section = $phpWord->addSection();
 
@@ -234,10 +249,10 @@ class ToDoListController extends Controller
 
         $section->addTextBreak(1);
         // Adding instructor's signature part
-            $section->addText('.......................................... 2024', array('bold' => true), array('alignment' => 'right', 'size'=>'8'));
-            $section->addText('Instruktur/Pembimbing Industri', array('bold' => true), array('alignment' => 'right', 'size'=>'8'));
-            $section->addTextBreak(3);
-            $section->addText('(................................................)', array('bold' => true), array('alignment' => 'right', 'size'=>'8'));
+        $section->addText('.......................................... 2024', array('bold' => true), array('alignment' => 'right', 'size' => '8'));
+        $section->addText('Instruktur/Pembimbing Industri', array('bold' => true), array('alignment' => 'right', 'size' => '8'));
+        $section->addTextBreak(3);
+        $section->addText('(................................................)', array('bold' => true), array('alignment' => 'right', 'size' => '8'));
 
         // Save the file
         $fileName = 'Laporan_PKL_' . now()->format('Y-m-d_H-i-s') . '.docx';
@@ -248,5 +263,4 @@ class ToDoListController extends Controller
 
         return response()->download($filePath)->deleteFileAfterSend(true);
     }
-
 }
