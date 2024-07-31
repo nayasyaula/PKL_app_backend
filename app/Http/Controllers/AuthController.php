@@ -9,34 +9,37 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Support\Facades\Log;
+use Carbon\Carbon;
+
 class AuthController extends Controller
 {
     public function login(Request $request)
-    {
-        $credentials = $request->only('email', 'password');
+{
+    $credentials = $request->only('email', 'password');
 
-        if (Auth::attempt($credentials)) {
-            $user = Auth::user();
-            // Log::info('user: ' . $user);
-            // $sessionId = $request->cookie('laravel_session');
-            // $token = $request->cookie('XSRF-TOKEN');
-            // Log::info('token: ' . $token);
-            // Log::info('session: ' . $sessionId);
-        
-            $token = $user->createToken('Personal Access Token')->plainTextToken;
-            // Kembalikan session token sebagai bagian dari respons JSON
-            return response()->json([
-                'token' => $token,
-                'user' => $user
-            ], 200);
-            // $token = $user->createToken('Personal Access Token')->plainTextToken;
+    if (Auth::attempt($credentials)) {
+        $user = Auth::user();
 
-            // return response()->json(['token' => $token], 200);
-        } else {
-            return response()->json(['error' => 'Unauthorized'], 401);
-        }
+        // Tentukan waktu kedaluwarsa token
+        $expiresAt = Carbon::now('Asia/Jakarta')->addHours(1); // Token kedaluwarsa dalam 1 jam
+
+        // Buat token dengan waktu kedaluwarsa
+        $token = $user->createToken('Personal Access Token', ['*'], $expiresAt);
+
+        // Pilih format waktu kedaluwarsa yang diinginkan
+        // $expiresAtTimestamp = $expiresAt->timestamp; // UNIX Timestamp
+        // $expiresAtISO = $expiresAt->toIso8601String(); // ISO 8601
+        $expiresAtFormatted = $expiresAt->format('Y-m-d H:i:s'); // Custom Format
+
+        return response()->json([
+            'token' => $token->plainTextToken,
+            'expires_at' => $expiresAtFormatted, // Ganti dengan $expiresAtISO atau $expiresAtFormatted sesuai format yang diinginkan
+            'user' => $user
+        ], 200);
+    } else {
+        return response()->json(['error' => 'Unauthorized'], 401);
     }
-
+}
     public function logout(Request $request)
     {
         $user = $request->user();
