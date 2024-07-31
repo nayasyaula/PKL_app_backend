@@ -18,6 +18,14 @@ return new class extends Migration
             $table->enum('role', ['admin', 'user']);
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->string('profile');
+            $table->string('telp');
+            $table->string('tempat_lahir');
+            $table->date('tanggal_lahir');
+            $table->enum('jenis_kelamin', ['perempuan', 'laki_laki']);
+            $table->string('status');
+            $table->string('agama');
+            $table->text('alamat');
             $table->rememberToken();
             $table->timestamps();
         });
