@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Log;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
@@ -50,8 +49,6 @@ class AuthController extends Controller
 
     public function register(Request $request)
     {
-        Log::info('Registration Request: ', $request->all()); // Logging untuk debugging
-
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
@@ -64,6 +61,8 @@ class AuthController extends Controller
             'password' => Hash::make($validatedData['password']),
         ]);
 
-        return response()->json(['success' => true, 'message' => 'Registration successful']);
+        $token = $user->createToken('Personal Access Token')->plainTextToken;
+
+        return response()->json(['token' => $token], 201);
     }
 }
