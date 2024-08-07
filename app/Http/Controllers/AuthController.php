@@ -6,60 +6,56 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
-use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Support\Facades\Log;
+use Laravel\Sanctum\HasApiTokens;
 use Carbon\Carbon;
+use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
     public function login(Request $request)
-{
-    $credentials = $request->only('email', 'password');
+    {
+        $credentials = $request->only('email', 'password');
 
-    // Log credentials for debugging (remove in production)
-    Log::info('Login Attempt:', $credentials);
+        // Log credentials for debugging (remove in production)
+        Log::info('Login Attempt:', $credentials);
 
-    if (Auth::attempt($credentials)) {
-        $user = Auth::user();
+        if (Auth::attempt($credentials)) {
+            $user = Auth::user();
 
-        $expiresAt = Carbon::now('Asia/Jakarta')->addHours(1);
+            $expiresAt = Carbon::now('Asia/Jakarta')->addHours(1);
 
-        $token = $user->createToken('Personal Access Token', ['*'], $expiresAt);
+            $token = $user->createToken('Personal Access Token', ['*'], $expiresAt);
 
-        $expiresAtFormatted = $expiresAt->format('Y-m-d H:i:s');
+            $expiresAtFormatted = $expiresAt->format('Y-m-d H:i:s');
 
-        return response()->json([
-            'token' => $token->plainTextToken,
-            'expires_at' => $expiresAtFormatted,
-            'user' => $user
-        ], 200);
-    } else {
-        Log::warning('Login Failed:', $credentials);
-        return response()->json(['error' => 'Unauthorized'], 401);
+            return response()->json([
+                'token' => $token->plainTextToken,
+                'expires_at' => $expiresAtFormatted,
+                'user' => $user
+            ], 200);
+        } else {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
     }
-}
 
-        // Pilih format waktu kedaluwarsa yang diinginkan
-        // $expiresAtTimestamp = $expiresAt->timestamp; // UNIX Timestamp
-        // $expiresAtISO = $expiresAt->toIso8601String(); // ISO 8601
-        $expiresAtFormatted = $expiresAt->format('Y-m-d H:i:s'); // Custom Format
-
-        return response()->json([
-            'token' => $token->plainTextToken,
-            'expires_at' => $expiresAtFormatted, // Ganti dengan $expiresAtISO atau $expiresAtFormatted sesuai format yang diinginkan
-            'user' => $user
-        ], 200);
-    } else {
-        return response()->json(['error' => 'Unauthorized'], 401);
-    }
-}
     public function logout(Request $request)
     {
-        $user = $request->user();
-        $user->tokens()->delete();
+        $user = Auth::user();
 
-        return response()->json(['message' => 'Logged out'], 200);
+        if ($user) {
+            // Revoke all tokens...
+            $user->tokens->each(function ($token, $key) {
+                $token->delete();
+            });
+
+            return response()->json(['message' => 'Successfully logged out']);
+        } else {
+            return response()->json(['error' => 'An error occurred while logging out.'], 500);
+        }
     }
+
+
 
     public function register(Request $request)
     {
@@ -74,12 +70,16 @@ class AuthController extends Controller
                 'telp' => 'required|string|max:15',
                 'tempat_lahir' => 'required|string|max:255',
                 'tanggal_lahir' => 'required|date',
-                'jenis_kelamin' => 'required|in:perempuan,laki_laki',
+                'jenis_kelamin' => 'required|in:Perempuan,Laki_laki',
                 'status' => 'required|string|max:255',
+                'jurusan' => 'required|string|max:255',
+                'sekolah' => 'required|string|max:255',
                 'agama' => 'required|string|max:255',
                 'alamat' => 'required|string|max:500',
             ]);
-          
+
+            Log::info('Validated Data: ', $validatedData); // Logging validated data for debugging
+
             $user = User::create([
                 'name' => $validatedData['name'],
                 'email' => $validatedData['email'],
@@ -90,6 +90,8 @@ class AuthController extends Controller
                 'tanggal_lahir' => $validatedData['tanggal_lahir'],
                 'jenis_kelamin' => $validatedData['jenis_kelamin'],
                 'status' => $validatedData['status'],
+                'jurusan' => $validatedData['jurusan'],
+                'sekolah' => $validatedData['sekolah'],
                 'agama' => $validatedData['agama'],
                 'alamat' => $validatedData['alamat'],
             ]);
@@ -98,6 +100,35 @@ class AuthController extends Controller
         } catch (\Exception $e) {
             Log::error('Registration Error: ' . $e->getMessage()); // Log the error message for debugging
             return response()->json(['success' => false, 'message' => 'Registration failed', 'error' => $e->getMessage()], 500);
+        }
+    }
+
+    public function changePassword(Request $request)
+    {
+        $request->validate([
+            'new_password' => 'required|string|min:8|confirmed',
+        ]);
+
+        $user = Auth::user();
+
+        $user->password = Hash::make($request->new_password);
+        $user->save();
+
+        return response()->json(['message' => 'Password changed successfully']);
+    }
+
+    public function verifyPassword(Request $request)
+    {
+        $request->validate([
+            'password' => 'required',
+        ]);
+
+        $user = auth()->user();
+
+        if ($user && Hash::check($request->password, $user->password)) {
+            return response()->json(['success' => true]);
+        } else {
+            return response()->json(['success' => false, 'message' => 'Incorrect password.'], 401);
         }
     }
 }
