@@ -55,53 +55,54 @@ class AuthController extends Controller
         }
     }
 
-
-
     public function register(Request $request)
-    {
-        try {
-            Log::info('Registration Request: ', $request->all()); // Logging for debugging
+{
+    try {
+        Log::info('Registration Request: ', $request->all());
 
-            $validatedData = $request->validate([
-                'name' => 'required|string|max:255',
-                'email' => 'required|string|email|max:255|unique:users',
-                'password' => 'required|string|min:8|confirmed',
-                'role' => 'user',
-                'telp' => 'required|string|max:15',
-                'tempat_lahir' => 'required|string|max:255',
-                'tanggal_lahir' => 'required|date',
-                'jenis_kelamin' => 'required|in:Perempuan,Laki_laki',
-                'status' => 'required|string|max:255',
-                'jurusan' => 'required|string|max:255',
-                'sekolah' => 'required|string|max:255',
-                'agama' => 'required|string|max:255',
-                'alamat' => 'required|string|max:500',
-            ]);
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:8|confirmed',
+            'password_confirmation' => 'required|string|min:8', // Pastikan validasi ini ada
+            'telp' => 'required|string|max:15',
+            'tempat_lahir' => 'required|string|max:255',
+            'tanggal_lahir' => 'required|date',
+            'jenis_kelamin' => 'required|in:Perempuan,Laki-laki',
+            'status' => 'required|string|max:255',
+            'jurusan' => 'required|string|max:255',
+            'sekolah' => 'required|string|max:255',
+            'agama' => 'required|string|max:255',
+            'alamat' => 'required|string|max:500',
+        ]);
 
-            Log::info('Validated Data: ', $validatedData); // Logging validated data for debugging
+        Log::info('Validated Data: ', $validatedData);
 
-            $user = User::create([
-                'name' => $validatedData['name'],
-                'email' => $validatedData['email'],
-                'password' => Hash::make($validatedData['password']),
-                'role' => 'user',
-                'telp' => $validatedData['telp'],
-                'tempat_lahir' => $validatedData['tempat_lahir'],
-                'tanggal_lahir' => $validatedData['tanggal_lahir'],
-                'jenis_kelamin' => $validatedData['jenis_kelamin'],
-                'status' => $validatedData['status'],
-                'jurusan' => $validatedData['jurusan'],
-                'sekolah' => $validatedData['sekolah'],
-                'agama' => $validatedData['agama'],
-                'alamat' => $validatedData['alamat'],
-            ]);
+        $user = User::create([
+            'name' => $validatedData['name'],
+            'email' => $validatedData['email'],
+            'password' => Hash::make($validatedData['password']),
+            'role' => 'user',
+            'telp' => $validatedData['telp'],
+            'tempat_lahir' => $validatedData['tempat_lahir'],
+            'tanggal_lahir' => $validatedData['tanggal_lahir'],
+            'jenis_kelamin' => $validatedData['jenis_kelamin'],
+            'status' => $validatedData['status'],
+            'jurusan' => $validatedData['jurusan'],
+            'sekolah' => $validatedData['sekolah'],
+            'agama' => $validatedData['agama'],
+            'alamat' => $validatedData['alamat'],
+        ]);
 
-            return response()->json(['success' => true, 'message' => 'Registration successful']);
-        } catch (\Exception $e) {
-            Log::error('Registration Error: ' . $e->getMessage()); // Log the error message for debugging
-            return response()->json(['success' => false, 'message' => 'Registration failed', 'error' => $e->getMessage()], 500);
-        }
+        Log::info('User Created: ', $user->toArray());
+
+        return response()->json(['success' => true, 'message' => 'Registration successful']);
+    } catch (\Exception $e) {
+        Log::error('Registration Error: ' . $e->getMessage());
+        return response()->json(['success' => false, 'message' => 'Registration failed', 'error' => $e->getMessage()], 500);
     }
+}
+
 
     public function changePassword(Request $request)
     {

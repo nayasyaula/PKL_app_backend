@@ -6,6 +6,7 @@ use App\Models\AttendanceModel;
 use App\Models\ToDoList;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth; // Pastikan ini ada
 use Illuminate\Support\Facades\Redirect;
 
 class UserController extends Controller
@@ -19,6 +20,12 @@ class UserController extends Controller
 
         return view('user', compact('users')); 
     }
+
+    public function getUser()
+{
+    $user = Auth::user(); // Ambil data pengguna yang sedang login
+    return response()->json($user);
+}
 
     /**
      * Show the form for creating a new resource.

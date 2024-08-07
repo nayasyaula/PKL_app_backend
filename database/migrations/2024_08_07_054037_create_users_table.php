@@ -27,6 +27,7 @@ return new class extends Migration
             $table->string('jurusan'); // Changed from enum to string
             $table->string('agama'); // Changed from enum to string
             $table->string('alamat', 500);
+            $table->string('sekolah'); // Kolom baru untuk sekolah
             $table->rememberToken();
             $table->timestamps();
         });

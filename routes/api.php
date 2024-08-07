@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ToDoListController;
+use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -19,4 +20,5 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('todolist/store', [ToDoListController::class, 'storeApi'])->name('ToDoList.store');
     Route::put('todolist/{id}/update', [ToDoListController::class, 'updateApi'])->name('ToDoList.update');
     Route::get('/create-document', [ToDoListController::class, 'createDocumentApi'])->name('word.tdl');
+    Route::get('/users/profile', [UserController::class, 'getUser']);
 });
