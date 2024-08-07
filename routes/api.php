@@ -20,4 +20,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('users/update', [UserControllerApi::class, 'update']);
     Route::post('users/change-password', [AuthController::class, 'changePassword']);
     Route::post('users/verify-password', [AuthController::class, 'verifyPassword']);
+    Route::post('todolist/store', [ToDoListController::class, 'storeApi'])->name('ToDoList.store');
+    Route::put('todolist/{id}/update', [ToDoListController::class, 'updateApi'])->name('ToDoList.update');
+    Route::get('/create-document', [ToDoListController::class, 'createDocumentApi'])->name('word.tdl');
 });

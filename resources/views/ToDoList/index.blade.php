@@ -19,7 +19,7 @@
             @if (count($todos) > 0)
                 @foreach ($todos as $date => $tasks)
                     @php
-                        $formattedDate = date('d M Y', strtotime($date));
+                        $formattedDate = date('D, d M Y', strtotime($date));
                     @endphp
                     <div class="mb-4">
                         <h4>{{ $formattedDate }}</h4>
