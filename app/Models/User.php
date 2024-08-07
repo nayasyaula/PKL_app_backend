@@ -28,6 +28,8 @@ class User extends Authenticatable
         'tanggal_lahir',
         'jenis_kelamin',
         'status',
+        'jurusan',
+        'sekolah',
         'agama',
         'alamat'
     ];
