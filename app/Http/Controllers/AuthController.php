@@ -6,8 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Log;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
 
 class AuthController extends Controller
@@ -39,6 +39,20 @@ class AuthController extends Controller
     }
 }
 
+        // Pilih format waktu kedaluwarsa yang diinginkan
+        // $expiresAtTimestamp = $expiresAt->timestamp; // UNIX Timestamp
+        // $expiresAtISO = $expiresAt->toIso8601String(); // ISO 8601
+        $expiresAtFormatted = $expiresAt->format('Y-m-d H:i:s'); // Custom Format
+
+        return response()->json([
+            'token' => $token->plainTextToken,
+            'expires_at' => $expiresAtFormatted, // Ganti dengan $expiresAtISO atau $expiresAtFormatted sesuai format yang diinginkan
+            'user' => $user
+        ], 200);
+    } else {
+        return response()->json(['error' => 'Unauthorized'], 401);
+    }
+}
     public function logout(Request $request)
     {
         $user = $request->user();
@@ -65,7 +79,7 @@ class AuthController extends Controller
                 'agama' => 'required|string|max:255',
                 'alamat' => 'required|string|max:500',
             ]);
-
+          
             $user = User::create([
                 'name' => $validatedData['name'],
                 'email' => $validatedData['email'],
