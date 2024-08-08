@@ -15,26 +15,32 @@ class AuthController extends Controller
 {
     public function login(Request $request)
     {
+        // Validasi input
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required'
+        ]);
+
+        // Ambil kredensial dari request
         $credentials = $request->only('email', 'password');
 
-        // Log credentials for debugging (remove in production)
-        Log::info('Login Attempt:', $credentials);
+        // Log kredensial untuk debugging (hapus log ini di produksi)
+        Log::info('Login Attempt:', ['email' => $credentials['email'], 'password' => $credentials['password']]);
 
+        // Cek kredensial dan autentikasi
         if (Auth::attempt($credentials)) {
             $user = Auth::user();
 
-            $expiresAt = Carbon::now('Asia/Jakarta')->addHours(1);
+            // Buat token personal access
+            $token = $user->createToken('Personal Access Token')->plainTextToken;
 
-            $token = $user->createToken('Personal Access Token', ['*'], $expiresAt);
-
-            $expiresAtFormatted = $expiresAt->format('Y-m-d H:i:s');
-
+            // Kembalikan response dengan token dan data pengguna
             return response()->json([
-                'token' => $token->plainTextToken,
-                'expires_at' => $expiresAtFormatted,
+                'token' => $token,
                 'user' => $user
             ], 200);
         } else {
+            // Jika kredensial salah, kembalikan response error
             return response()->json(['error' => 'Unauthorized'], 401);
         }
     }

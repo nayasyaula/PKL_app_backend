@@ -14,23 +14,23 @@ class Kernel extends HttpKernel
      * @var array<int, class-string|string>
      */
     protected $middleware = [
-    // other middleware
-    \App\Http\Middleware\CorsMiddleware::class,
-];
-
-protected $middlewareGroups = [
-    'web' => [
         // other middleware
         \App\Http\Middleware\CorsMiddleware::class,
-    ],
-    
-    'api' => [
-        \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
-        \App\Http\Middleware\CorsMiddleware::class,
-        'throttle:api',
-        \Illuminate\Routing\Middleware\SubstituteBindings::class,
-    ],
-];
+    ];
+
+    protected $middlewareGroups = [
+        'web' => [
+            // other middleware
+            \App\Http\Middleware\CorsMiddleware::class,
+        ],
+
+        'api' => [
+            \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
+            \App\Http\Middleware\CorsMiddleware::class,
+            'throttle:api',
+            \Illuminate\Routing\Middleware\SubstituteBindings::class,
+        ],
+    ];
 
     /**
      * The application's route middleware.
