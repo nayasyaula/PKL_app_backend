@@ -22,9 +22,10 @@ return new class extends Migration
             $table->string('telp', 15);
             $table->string('tempat_lahir');
             $table->date('tanggal_lahir');
-            $table->enum('jenis_kelamin', ['Perempuan', 'Laki_laki']);
+            $table->enum('jenis_kelamin', ['Perempuan', 'Laki-laki']);
             $table->string('status'); // Changed from enum to string
-            $table->string('jurusan'); // Changed from enum to string
+            $table->string('jurusan');
+            $table->enum('sekolah', ['SMK Wikrama Bogor', 'SMKN 3 BOGOR']); // Changed from enum to string
             $table->string('agama'); // Changed from enum to string
             $table->string('alamat', 500);
             $table->string('sekolah'); // Kolom baru untuk sekolah

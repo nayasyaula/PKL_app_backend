@@ -21,11 +21,11 @@ class UserController extends Controller
         return view('user', compact('users')); 
     }
 
-    public function getUser()
-{
-    $user = Auth::user(); // Ambil data pengguna yang sedang login
-    return response()->json($user);
-}
+//     public function getUser()
+// {
+//     $user = Auth::user(); 
+//     return response()->json($user);
+// }
 
     /**
      * Show the form for creating a new resource.

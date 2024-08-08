@@ -42,13 +42,11 @@ class AuthController extends Controller
     public function logout(Request $request)
     {
         $user = Auth::user();
-
         if ($user) {
             // Revoke all tokens...
             $user->tokens->each(function ($token, $key) {
                 $token->delete();
             });
-
             return response()->json(['message' => 'Successfully logged out']);
         } else {
             return response()->json(['error' => 'An error occurred while logging out.'], 500);

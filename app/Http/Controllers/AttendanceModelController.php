@@ -207,4 +207,56 @@ class AttendanceModelController extends Controller
 
     return response()->download($filePath)->deleteFileAfterSend(true);
 }
+public function process(Request $request)
+{
+    $type = $request->query('type', 'create');
+    $id = $request->query('id', null);
+
+    if ($type === 'create') {
+        $userId = Auth::id();
+        $inTime = Carbon::parse($request->input('in'))->setTimezone('Asia/Jakarta');
+
+        $status = $inTime->hour < 8 ? 'Masuk' : 'Telat';
+
+        AttendanceModel::create([
+            'user_id' => $userId,
+            'in' => $inTime,
+            'status' => $status,
+        ]);
+
+        return response()->json([
+            'message' => 'Create process triggered',
+            'data' => [
+                'user_id' => $userId,
+                'in' => $inTime->toDateTimeString(),
+                'status' => $status,
+            ]
+        ]);
+    } elseif ($type === 'update' && $id) {
+        $userId = Auth::id();
+        $outTime = Carbon::parse($request->input('out'))->setTimezone('Asia/Jakarta');
+
+        $status = $outTime->hour >= 16 && $outTime->minute >= 55 ? 'Keluar' : 'Izin';
+
+        AttendanceModel::where('id', $id)->update([
+            'user_id' => $userId,
+            'out' => $outTime,
+            'status' => $status,
+        ]);
+
+        return response()->json([
+            'message' => 'Update process triggered',
+            'data' => [
+                'id' => $id,
+                'user_id' => $userId,
+                'out' => $outTime->toDateTimeString(),
+                'status' => $status,
+            ]
+        ]);
+    } else {
+        return response()->json(['message' => 'Invalid request'], 400);
+    }
+}
+
+
 }
