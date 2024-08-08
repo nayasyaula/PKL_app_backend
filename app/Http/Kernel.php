@@ -23,10 +23,9 @@ protected $middlewareGroups = [
         // other middleware
         \App\Http\Middleware\CorsMiddleware::class,
     ],
-    
+
     'api' => [
         \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
-        \App\Http\Middleware\CorsMiddleware::class,
         'throttle:api',
         \Illuminate\Routing\Middleware\SubstituteBindings::class,
     ],

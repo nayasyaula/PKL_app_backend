@@ -33,13 +33,13 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/ToDoList/index', [ToDoListController::class, 'index'])->name('ToDoList.index');
     Route::get('/todolist/create', [ToDoListController::class, 'create'])->name('ToDoList.create');
-    Route::post('/todolist/store', [ToDoListController::class, 'storeWeb'])->name('ToDoList.store');
+    Route::post('/todolist/store', [ToDoListController::class, 'store'])->name('ToDoList.store');
     Route::get('/todolist/{todolist}/edit', [ToDoListController::class, 'edit'])->name('ToDoList.edit');
-    Route::put('/todolist/{todolist}/update', [ToDoListController::class, 'updateWeb'])->name('ToDoList.update');
+    Route::put('/todolist/{todolist}/update', [ToDoListController::class, 'update'])->name('ToDoList.update');
     Route::delete('/todolist/{id}/delete', [ToDoListController::class, 'destroy'])->name('ToDoList.destroy');
     
     Route::put('/todolist/{id}/updateStatus', [ToDoListController::class, 'updateStatus'])->name('ToDoList.updateStatus');
     Route::post('/todolist/{id}/pesan', [ToDoListController::class, 'pesan'])->name('ToDoList.pesan');
 
-    Route::get('/create-document', [ToDoListController::class, 'createDocumentWeb'])->name('word.tdl');
+    Route::get('/create-document', [ToDoListController::class, 'createDocument'])->name('word.tdl');
 });

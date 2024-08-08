@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Support\Facades\Log;
 use Laravel\Sanctum\HasApiTokens;
 use Carbon\Carbon;
@@ -54,10 +55,7 @@ class AuthController extends Controller
     }
 
     public function register(Request $request)
-{
-    try {
-        Log::info('Registration Request: ', $request->all());
-
+    {
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
@@ -80,54 +78,10 @@ class AuthController extends Controller
             'name' => $validatedData['name'],
             'email' => $validatedData['email'],
             'password' => Hash::make($validatedData['password']),
-            'role' => 'user',
-            'telp' => $validatedData['telp'],
-            'tempat_lahir' => $validatedData['tempat_lahir'],
-            'tanggal_lahir' => $validatedData['tanggal_lahir'],
-            'jenis_kelamin' => $validatedData['jenis_kelamin'],
-            'status' => $validatedData['status'],
-            'jurusan' => $validatedData['jurusan'],
-            'sekolah' => $validatedData['sekolah'],
-            'agama' => $validatedData['agama'],
-            'alamat' => $validatedData['alamat'],
         ]);
 
-        Log::info('User Created: ', $user->toArray());
+        $token = $user->createToken('Personal Access Token')->plainTextToken;
 
-        return response()->json(['success' => true, 'message' => 'Registration successful']);
-    } catch (\Exception $e) {
-        Log::error('Registration Error: ' . $e->getMessage());
-        return response()->json(['success' => false, 'message' => 'Registration failed', 'error' => $e->getMessage()], 500);
-    }
-}
-
-
-    public function changePassword(Request $request)
-    {
-        $request->validate([
-            'new_password' => 'required|string|min:8|confirmed',
-        ]);
-
-        $user = Auth::user();
-
-        $user->password = Hash::make($request->new_password);
-        $user->save();
-
-        return response()->json(['message' => 'Password changed successfully']);
-    }
-
-    public function verifyPassword(Request $request)
-    {
-        $request->validate([
-            'password' => 'required',
-        ]);
-
-        $user = auth()->user();
-
-        if ($user && Hash::check($request->password, $user->password)) {
-            return response()->json(['success' => true]);
-        } else {
-            return response()->json(['success' => false, 'message' => 'Incorrect password.'], 401);
-        }
+        return response()->json(['token' => $token], 201);
     }
 }
