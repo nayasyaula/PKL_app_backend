@@ -10,9 +10,6 @@ Route::post('login', [AuthController::class, 'login']);
 Route::post('logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 Route::post('register', [AuthController::class, 'register']);
 
-Route::middleware(['auth'])->group(function () {
-});
-
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('todolist', [ToDoListController::class, "test"])->name("test");
     Route::post('users/profile-image', [UserControllerApi::class, 'uploadProfileImage']);
