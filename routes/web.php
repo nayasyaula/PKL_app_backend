@@ -21,7 +21,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/pages', [AttendanceModelController::class, 'index'])->name('pages');
     Route::post('/store', [AttendanceModelController::class, 'store'])->name('store');
     Route::patch('/update/{id}', [AttendanceModelController::class, 'update'])->name('update');
-    Route::get('/attendance/create-document', [AttendanceModelController::class, 'createDocument'])->name('word.attendance');
+    Route::get('/attendance/create-document', [AttendanceModelController::class, 'createDocumentWeb'])->name('word.attendance');
 
     Route::get('/user', [UserController::class, 'index'])->name('user.index');
     Route::get('/user/{id}', [UserController::class, 'show'])->name('show.user');
