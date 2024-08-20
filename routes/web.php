@@ -3,6 +3,7 @@
 use App\Http\Controllers\AttendanceModelController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\QRCodeController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ToDoListController;
 use Illuminate\Support\Facades\Auth;
@@ -42,4 +43,13 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/todolist/{id}/pesan', [ToDoListController::class, 'pesan'])->name('ToDoList.pesan');
 
     Route::get('/create-document', [ToDoListController::class, 'createDocument'])->name('word.tdl');
+    // Route::get('/generate-qr/{userId}', [QRCodeController::class, 'showQRCode'])->name('generate-qr');
+    // Route::get('/somepage', [QRCodeController::class, 'showPageWithQRCodeButton'])->name('somepage');
+
+    // Rute untuk menandai absensi
+Route::get('/mark-attendance', [AttendanceModelController::class, 'markAttendance'])->name('mark-attendance');
+
+// Rute untuk menghasilkan QR Code
+Route::get('/generate-qr', [QRCodeController::class, 'generateQRCode'])->name('generate-qr');
+
 });

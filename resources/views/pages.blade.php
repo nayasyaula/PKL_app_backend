@@ -27,6 +27,10 @@
     </div>
 
     <a href="{{ route('word.attendance') }}" class="btn btn-primary mt-3">Expor Jurnal Kehadiran</a>
+<!-- Pastikan $userId didefinisikan di view ini -->
+{{-- <a href="{{ route('somepage') }}" class="button">Generate QR Code</a> --}}
+<a href="{{ route('generate-qr') }}" class="btn btn-secondary mt-3">Generate QR Code</a> <!-- Tombol baru untuk QR Code -->
+
     <br>
 
     <div class="table-responsive">

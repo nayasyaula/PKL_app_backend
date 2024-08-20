@@ -15,26 +15,32 @@ class AuthController extends Controller
 {
     public function login(Request $request)
     {
+        // Validasi input
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required'
+        ]);
+
+        // Ambil kredensial dari request
         $credentials = $request->only('email', 'password');
 
-        // Log credentials for debugging (remove in production)
-        Log::info('Login Attempt:', $credentials);
+        // Log kredensial untuk debugging (hapus log ini di produksi)
+        Log::info('Login Attempt:', ['email' => $credentials['email'], 'password' => $credentials['password']]);
 
+        // Cek kredensial dan autentikasi
         if (Auth::attempt($credentials)) {
             $user = Auth::user();
 
-            $expiresAt = Carbon::now('Asia/Jakarta')->addHours(1);
+            // Buat token personal access
+            $token = $user->createToken('Personal Access Token')->plainTextToken;
 
-            $token = $user->createToken('Personal Access Token', ['*'], $expiresAt);
-
-            $expiresAtFormatted = $expiresAt->format('Y-m-d H:i:s');
-
+            // Kembalikan response dengan token dan data pengguna
             return response()->json([
-                'token' => $token->plainTextToken,
-                'expires_at' => $expiresAtFormatted,
+                'token' => $token,
                 'user' => $user
             ], 200);
         } else {
+            // Jika kredensial salah, kembalikan response error
             return response()->json(['error' => 'Unauthorized'], 401);
         }
     }
@@ -77,10 +83,50 @@ class AuthController extends Controller
             'name' => $validatedData['name'],
             'email' => $validatedData['email'],
             'password' => Hash::make($validatedData['password']),
+            'role' => 'user',
+            'telp' => $validatedData['telp'],
+            'tempat_lahir' => $validatedData['tempat_lahir'],
+            'tanggal_lahir' => $validatedData['tanggal_lahir'],
+            'jenis_kelamin' => $validatedData['jenis_kelamin'],
+            'status' => $validatedData['status'],
+            'jurusan' => $validatedData['jurusan'],
+            'sekolah' => $validatedData['sekolah'],
+            'agama' => $validatedData['agama'],
+            'alamat' => $validatedData['alamat'],
         ]);
+
 
         $token = $user->createToken('Personal Access Token')->plainTextToken;
 
         return response()->json(['token' => $token], 201);
+    }
+
+    public function changePassword(Request $request)
+    {
+        $request->validate([
+            'new_password' => 'required|string|min:8|confirmed',
+        ]);
+
+        $user = Auth::user();
+
+        $user->password = Hash::make($request->new_password);
+        $user->save();
+
+        return response()->json(['message' => 'Password changed successfully']);
+    }
+
+    public function verifyPassword(Request $request)
+    {
+        $request->validate([
+            'password' => 'required',
+        ]);
+
+        $user = auth()->Auth::user()();
+
+        if ($user && Hash::check($request->password, $user->password)) {
+            return response()->json(['success' => true]);
+        } else {
+            return response()->json(['success' => false, 'message' => 'Incorrect password.'], 401);
+        }
     }
 }

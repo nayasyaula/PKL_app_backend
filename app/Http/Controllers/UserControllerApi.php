@@ -3,11 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use Dotenv\Validator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
 
 class UserControllerApi extends Controller
 {
@@ -74,26 +74,36 @@ class UserControllerApi extends Controller
 
     public function update(Request $request)
     {
-        $user = Auth::user();
+        Log::info('Update method called');
 
+        $user = Auth::user(); // Mendapatkan pengguna yang sedang login
+    
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
+            'name' => 'nullable|string|max:255',
+            'email' => 'nullable|string|email|max:255|unique:users,email,' . $user->id,
             'telp' => 'nullable|string|max:15',
             'tanggal_lahir' => 'nullable|date',
             'tempat_lahir' => 'nullable|string|max:255',
             'jenis_kelamin' => 'nullable|string|max:255',
             'status' => 'nullable|string|max:255',
             'agama' => 'nullable|string|max:255',
+            'sekolah' => 'nullable|string|max:255',
             'alamat' => 'nullable|string|max:255',
         ]);
-
+    
         if ($validator->fails()) {
+            Log::info('Validation failed', $validator->errors()->toArray());
             return response()->json(['errors' => $validator->errors()], 422);
         }
-
-        $user->update($request->all());
-
+    
+        $user->update($request->only([
+            'name', 'email', 'telp', 'tanggal_lahir', 'tempat_lahir',
+            'jenis_kelamin', 'status', 'agama', 'sekolah', 'alamat'
+        ]));
+    
+        Log::info('User updated successfully', ['user' => $user]);
+        
         return response()->json($user);
     }
+    
 }

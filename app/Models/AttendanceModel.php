@@ -13,7 +13,9 @@ class AttendanceModel extends Model
         'in',
         'out',
         'status',
-        'user_id'
+        'user_id',
+        'in_status',
+        'out_status'
     ];
 
     public function user() {

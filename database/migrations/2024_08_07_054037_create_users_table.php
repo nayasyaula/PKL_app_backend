@@ -19,7 +19,7 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->string('profile')->nullable();
-            $table->string('telp', 15);
+            $table->string('telp', 15)->nullable();
             $table->string('tempat_lahir');
             $table->date('tanggal_lahir');
             $table->enum('jenis_kelamin', ['Perempuan', 'Laki-laki']);
@@ -28,7 +28,6 @@ return new class extends Migration
             $table->enum('sekolah', ['SMK Wikrama Bogor', 'SMKN 3 BOGOR']); // Changed from enum to string
             $table->string('agama'); // Changed from enum to string
             $table->string('alamat', 500);
-            $table->string('sekolah'); // Kolom baru untuk sekolah
             $table->rememberToken();
             $table->timestamps();
         });

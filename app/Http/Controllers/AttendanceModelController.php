@@ -7,6 +7,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use PhpOffice\PhpWord\IOFactory;
 use PhpOffice\PhpWord\PhpWord;
 
@@ -15,50 +16,110 @@ class AttendanceModelController extends Controller
     /**
      * Display a listing of the resource.
      */
-
     public function index(Request $request)
     {
         $userId = Auth::id();
-
-        $todayDate = Carbon::today()->setTimezone('Asia/Jakarta')->toDateString();
-
-        $attendance = AttendanceModel::where('user_id', $userId)->whereDate('created_at', $todayDate)->get();
-
+    
+        // Ambil semua data absensi untuk user yang sedang login
+        $attendance = AttendanceModel::where('user_id', $userId)
+            ->get();
+    
         return view('pages', compact('attendance'));
     }
+    
 
     public function indexApi(Request $request)
+{
+    $userId = Auth::id();
+
+    $attendance = AttendanceModel::where('user_id', $userId)
+        ->get();
+
+    return response()->json($attendance);
+}
+
+
+    public function markAttendance()
     {
-        // Mengambil ID pengguna yang sedang login
         $userId = Auth::id();
+        $todayAttendance = AttendanceModel::where('user_id', $userId)
+            ->whereDate('created_at', Carbon::today())
+            ->first();
 
-        // Mengambil tanggal hari ini dengan zona waktu Jakarta
-        $todayDate = Carbon::today()->setTimezone('Asia/Jakarta')->toDateString();
+        if (!$todayAttendance) {
+            AttendanceModel::create([
+                'user_id' => $userId,
+                'in' => Carbon::now(),
+                'in_status' => Carbon::now()->hour == 8 && Carbon::now()->minute == 0 ? 'Masuk' : 'Telat',
+            ]);
 
-        // Mengambil data kehadiran berdasarkan ID pengguna dan tanggal hari ini
-        $attendance = AttendanceModel::where('user_id', $userId)
-                                    ->whereDate('created_at', $todayDate)
-                                    ->get();
+            return redirect()->route('pages')->with('success', 'Attendance IN marked successfully.');
+        }
 
-        // Mengembalikan data dalam format JSON
-        return response()->json($attendance);
+        return redirect()->route('pages')->with('info', 'You have already marked your attendance for today.');
     }
 
+    public function markAttendanceApi(Request $request)
+{
+    $userId = Auth::id();
+    $now = Carbon::now()->setTimezone('Asia/Jakarta');
+    $todayDate = $now->toDateString();
+    $cutOffHour = 8;
+    $cutOffMinute = 0;
 
-    /**
-     * Show the form for creating a new resource.
-     */
+    $attendance = AttendanceModel::where('user_id', $userId)
+        ->whereDate('created_at', $todayDate)
+        ->first();
+
+    if (!$attendance) {
+        $status = ($now->hour < $cutOffHour || ($now->hour == $cutOffHour && $now->minute <= $cutOffMinute)) ? 'Masuk' : 'Telat';
+
+        AttendanceModel::create([
+            'user_id' => $userId,
+            'in' => $now->toDateTimeString(),
+            'in_status' => $status,
+        ]);
+
+        Log::info("Attendance created for user $userId. Time: {$now->toDateTimeString()}, Status: $status");
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Attendance marked as present successfully.',
+            'status' => $status
+        ]);
+    } else {
+        if (!$attendance->out) {
+            $status = ($now->hour >= 16 && $now->minute >= 55) ? 'Keluar' : 'Izin';
+
+            $attendance->update([
+                'out' => $now->toDateTimeString(),
+                'out_status' => $status,
+            ]);
+
+            Log::info("Attendance updated for user $userId. Time: {$now->toDateTimeString()}, Status: $status");
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Attendance marked as out successfully.',
+                'status' => $status
+            ]);
+        } else {
+            return response()->json([
+                'success' => false,
+                'message' => 'Attendance already marked for today.'
+            ]);
+        }
+    }
+}
+
+
     public function create()
     {
         //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-
         $userId = Auth::id();
         $inTime = Carbon::parse($request->input('in'))->setTimezone('Asia/Jakarta');
 
@@ -67,58 +128,45 @@ class AttendanceModelController extends Controller
         AttendanceModel::create([
             'user_id' => $userId,
             'in' => $inTime,
-            'status' => $status,
+            'in_status' => $status,
         ]);
 
         return redirect()->route('pages');
     }
 
-
-    /**
-     * Display the specified resource.
-     */
     public function show(AttendanceModel $attendanceModel)
     {
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(AttendanceModel $attendanceModel)
     {
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, AttendanceModel $attendanceModel, $id)
+    public function update(Request $request, $id)
     {
         $userId = Auth::id();
         $outTime = Carbon::parse($request->input('out'))->setTimezone('Asia/Jakarta');
 
-        $status = $outTime->hour >= 16 && $outTime->minute >= 55 ? 'Keluar' : 'Izin';
+        $status = ($outTime->hour >= 16 && $outTime->minute >= 55) ? 'Keluar' : 'Izin';
 
-        AttendanceModel::where('id', $id)->update([
-            'user_id' => $userId,
-            'out' => $outTime,
-            'status' => $status,
-        ]);
+        $attendance = AttendanceModel::where('id', $id)->first();
+
+        if ($attendance && $attendance->user_id == $userId) {
+            $attendance->update([
+                'out' => $outTime,
+                'out_status' => $status,
+            ]);
+        }
 
         return redirect()->route('pages');
-
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(AttendanceModel $attendanceModel)
     {
         //
-    }
-
-    public function createDocumentWeb()    
+    }    public function createDocumentWeb()
     {
         $phpWord = new PhpWord();
 
@@ -210,10 +258,10 @@ class AttendanceModelController extends Controller
 
         $section->addTextBreak(1);
         // Adding instructor's signature part
-            $section->addText('.......................................... 2024', array('bold' => true), array('alignment' => 'right', 'size'=>'8'));
-            $section->addText('Instruktur/Pembimbing Industri', array('bold' => true), array('alignment' => 'right', 'size'=>'8'));
-            $section->addTextBreak(3);
-            $section->addText('(................................................)', array('bold' => true), array('alignment' => 'right', 'size'=>'8'));
+        $section->addText('.......................................... 2024', array('bold' => true), array('alignment' => 'right', 'size' => '8'));
+        $section->addText('Instruktur/Pembimbing Industri', array('bold' => true), array('alignment' => 'right', 'size' => '8'));
+        $section->addTextBreak(3);
+        $section->addText('(................................................)', array('bold' => true), array('alignment' => 'right', 'size' => '8'));
 
 
         // Save the file
@@ -226,7 +274,7 @@ class AttendanceModelController extends Controller
         return response()->download($filePath)->deleteFileAfterSend(true);
     }
 
-    public function createDocApi()    
+    public function createDocApi()
     {
         $phpWord = new PhpWord();
 
@@ -303,7 +351,7 @@ class AttendanceModelController extends Controller
         $table->addCell(2000, $cellStyle)->addText('Hari/Tanggal', 'headerRowStyle', 'centered');
         $table->addCell(4000, $cellStyle)->addText('Datang', 'headerRowStyle', 'centered');
         $table->addCell(4000, $cellStyle)->addText('Pulang', 'headerRowStyle', 'centered');
-        $table->addCell(2000, $cellStyle)->addText('Keterangan Tidak Hadir', 'headerRowStyle', 'centered');
+        // $table->addCell(2000, $cellStyle)->addText('Keterangan ', 'headerRowStyle', 'centered');
 
         // Data rows
         foreach ($attendance as $index => $item) {
@@ -313,15 +361,15 @@ class AttendanceModelController extends Controller
             $table->addCell(2000, $cellStyle)->addText($date, 'contentStyle', 'centered');
             $table->addCell(4000, $cellStyle)->addText($item->in, 'contentStyle', 'centered');
             $table->addCell(2000, $cellStyle)->addText($item->out, 'contentStyle', 'centered');
-            $table->addCell(2000, $cellStyle)->addText($item->status, 'contentStyle', 'centered');
+            // $table->addCell(2000, $cellStyle)->addText($item->status, 'contentStyle', 'centered');
         }
 
         $section->addTextBreak(1);
         // Adding instructor's signature part
-            $section->addText('.......................................... 2024', array('bold' => true), array('alignment' => 'right', 'size'=>'8'));
-            $section->addText('Instruktur/Pembimbing Industri', array('bold' => true), array('alignment' => 'right', 'size'=>'8'));
-            $section->addTextBreak(3);
-            $section->addText('(................................................)', array('bold' => true), array('alignment' => 'right', 'size'=>'8'));
+        $section->addText('.......................................... 2024', array('bold' => true), array('alignment' => 'right', 'size' => '8'));
+        $section->addText('Instruktur/Pembimbing Industri', array('bold' => true), array('alignment' => 'right', 'size' => '8'));
+        $section->addTextBreak(3);
+        $section->addText('(................................................)', array('bold' => true), array('alignment' => 'right', 'size' => '8'));
 
 
         // Save the file to a temporary location
@@ -393,8 +441,4 @@ class AttendanceModelController extends Controller
             return response()->json(['message' => 'Invalid request'], 400);
         }
     }
-    
-
-
 }
-
