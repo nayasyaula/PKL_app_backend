@@ -4,7 +4,7 @@
     <div class="jumbotron py-2 px-1 bg-light text-center mb-4">
         <br>
         <h1 style="color: #343a40;">
-            Input Today's Attendance
+            Attendance Today
         </h1>
     </div>
 
