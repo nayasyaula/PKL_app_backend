@@ -17,7 +17,8 @@ class ToDoList extends Model
         'date',    
         'pesan',
         'user_id',
-        'attendance_id'
+        'attendance_id',
+        'file_path'
     ];
 
     public function user() {

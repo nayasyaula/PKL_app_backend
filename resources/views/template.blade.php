@@ -4,12 +4,12 @@
 <head>
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
-  <title>Laravel</title>
+  <title>MIGINFO</title>
   <meta content="" name="description">
   <meta content="" name="keywords">
 
   <!-- Favicons -->
-  <link href="assets/img/favicon.png" rel="icon">
+  <link href="assets/img/logo-miginfo.png" rel="icon">
   <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
 
   <!-- Google Fonts -->
@@ -25,16 +25,41 @@
 
   <!-- Template Main CSS File -->
   <link href="{{ asset('assets/css/style.css')}}" rel="stylesheet">
+  <style>
+    /* Media query to ensure header items stack vertically on small screens */
+    @media (max-width: 768px) {
+      .navbar {
+        display: flex;
+        flex-direction: column;
+      }
+      .navbar ul {
+        display: flex;
+        flex-direction: column;
+        padding: 0;
+        margin: 0;
+        list-style: none;
+      }
+      .navbar ul a {
+        padding: 10px;
+        text-align: center;
+        border-bottom: 1px solid #ddd;
+      }
+      .navbar .getstarted {
+        margin-top: 10px;
+      }
+    }
+  </style>
 </head>
 
 <body>
 
   <!-- ======= Header ======= -->
-  <header id="header" class="fixed-top  header-transparent ">
+  <!-- ======= Header ======= -->
+  <header id="header" class="fixed-top header-transparent">
     <div class="container d-flex align-items-center justify-content-between">
 
       <div class="logo d-flex align-items-center gap-2">
-        <a href="index.html"><img src="assets/img/logo.jpg" alt="" class="img-fluid"></a>
+        <a href="index.html"><img src="assets/img/logo.png" alt="" class="img-fluid"></a>
         <h1><a href="index.html">MIGINFO</a></h1>
       </div>
 
@@ -42,15 +67,15 @@
         <ul>
           @if (Route::has('login'))
               @auth
-                  <a href="{{ url('/home') }}" class="getstarted scrollto">Dashboard</a>
+                  <li><a href="{{ url('/home') }}" class="getstarted scrollto">Dashboard</a></li>
               @else
-                  <a href="{{ route('login') }}" class="getstarted scrollto">Log in</a>
-                  @if (Route::has('register'))<a href="{{ route('register') }}"class="getstarted scrollto">Register</a>
+                  <li><a href="{{ route('login') }}" class="getstarted scrollto">Log in</a></li>
+                  @if (Route::has('register'))
+                      <li><a href="{{ route('register') }}" class="getstarted scrollto">Register</a></li>
                   @endif
               @endauth
-          </nav>
-      @endif
-        
+          @endif
+        </ul>
       </nav><!-- .navbar -->
 
     </div>

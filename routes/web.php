@@ -6,6 +6,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\QRCodeController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ToDoListController;
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Auth;
 
 Route::get('/', function () {
@@ -34,15 +35,18 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/ToDoList/index', [ToDoListController::class, 'index'])->name('ToDoList.index');
     Route::get('/todolist/create', [ToDoListController::class, 'create'])->name('ToDoList.create');
-    Route::post('/todolist/store', [ToDoListController::class, 'store'])->name('ToDoList.store');
+    Route::post('/todolist/store', [ToDoListController::class, 'storeWeb'])->name('ToDoList.store');
     Route::get('/todolist/{todolist}/edit', [ToDoListController::class, 'edit'])->name('ToDoList.edit');
-    Route::put('/todolist/{todolist}/update', [ToDoListController::class, 'update'])->name('ToDoList.update');
+    Route::put('/todolist/{todolist}/update', [ToDoListController::class, 'updateWeb'])->name('ToDoList.update');
     Route::delete('/todolist/{id}/delete', [ToDoListController::class, 'destroy'])->name('ToDoList.destroy');
-    
+    // Route di web.php
+Route::get('/todolist/{id}/upload-file', [ToDoListController::class, 'showUploadForm'])->name('ToDoList.uploadFile');
+Route::post('/todolist/{id}/upload-file', [ToDoListController::class, 'uploadFile'])->name('ToDoList.uploadFile.store');
+
     Route::put('/todolist/{id}/updateStatus', [ToDoListController::class, 'updateStatus'])->name('ToDoList.updateStatus');
     Route::post('/todolist/{id}/pesan', [ToDoListController::class, 'pesan'])->name('ToDoList.pesan');
 
-    Route::get('/create-document', [ToDoListController::class, 'createDocument'])->name('word.tdl');
+    Route::get('/create-document', [ToDoListController::class, 'createDocumentWeb'])->name('word.tdl');
     // Route::get('/generate-qr/{userId}', [QRCodeController::class, 'showQRCode'])->name('generate-qr');
     // Route::get('/somepage', [QRCodeController::class, 'showPageWithQRCodeButton'])->name('somepage');
 
@@ -51,5 +55,11 @@ Route::get('/mark-attendance', [AttendanceModelController::class, 'markAttendanc
 
 // Rute untuk menghasilkan QR Code
 Route::get('/generate-qr', [QRCodeController::class, 'generateQRCode'])->name('generate-qr');
+
+Route::get('/profile', [ProfileController::class, 'show'])->name('profile');
+Route::get('/profile/edit', [ProfileController::class, 'showEditProfileForm'])->name('profile.edit');
+Route::post('/profile/update', [ProfileController::class, 'updateProfile'])->name('profile.update');
+Route::get('/profile/change-password', [ProfileController::class, 'showChangePasswordForm'])->name('profile.change_password');
+Route::post('/profile/change-password', [ProfileController::class, 'changePassword'])->name('profile.update_password');
 
 });

@@ -206,7 +206,7 @@ class AttendanceModelController extends Controller
         $textCell->addTextRun()->addText('', null, ['alignment' => 'left']);
 
         // Adding the report title
-        $section->addText('LAPORAN KEHADIRAN SISWA PKL DI INSTANSI/PERUSAHAAN', 'headerStyle', 'centered');
+        $section->addText('LAPORAN KEHADIRAN SISWA PKL DI INSTANSI / PERUSAHAAN', 'headerStyle', 'centered');
         $section->addTextBreak(1);
 
         // Fetching data from the database
@@ -216,7 +216,7 @@ class AttendanceModelController extends Controller
         // Adding the details
         $section->addText('Nama Peserta Didik     : ' . $user->name, 'contentStyle', 'left');
         $section->addText('Industri Tempat PKL    : PT Mitra Global Informatika', 'contentStyle', 'left');
-        $section->addText('Nama Instruktur/Pembimbing Industri : Pak Andhira', 'contentStyle', 'left');
+        $section->addText('Nama Instruktur / Pembimbing Industri : Pak Andhira', 'contentStyle', 'left');
         $section->addText('Nama Guru Pembimbing   : Pak Hendri', 'contentStyle', 'left');
         $section->addTextBreak(1);
 
@@ -259,13 +259,13 @@ class AttendanceModelController extends Controller
         $section->addTextBreak(1);
         // Adding instructor's signature part
         $section->addText('.......................................... 2024', array('bold' => true), array('alignment' => 'right', 'size' => '8'));
-        $section->addText('Instruktur/Pembimbing Industri', array('bold' => true), array('alignment' => 'right', 'size' => '8'));
+        $section->addText('Instruktur / Pembimbing Industri', array('bold' => true), array('alignment' => 'right', 'size' => '8'));
         $section->addTextBreak(3);
         $section->addText('(................................................)', array('bold' => true), array('alignment' => 'right', 'size' => '8'));
 
 
         // Save the file
-        $fileName = 'Laporan_PKL_' . now()->format('Y-m-d_H-i-s') . '.docx';
+        $fileName = 'attendance report-' . now()->format('d-m-Y') . '.docx';
         $filePath = storage_path('app/public/' . $fileName);
 
         $objWriter = IOFactory::createWriter($phpWord, 'Word2007');
@@ -314,7 +314,7 @@ class AttendanceModelController extends Controller
         $textCell->addTextRun()->addText('', null, ['alignment' => 'left']);
 
         // Adding the report title
-        $section->addText('LAPORAN KEHADIRAN SISWA PKL DI INSTANSI/PERUSAHAAN', 'headerStyle', 'centered');
+        $section->addText('LAPORAN KEHADIRAN SISWA PKL DI INSTANSI / PERUSAHAAN', 'headerStyle', 'centered');
         $section->addTextBreak(1);
 
         // Fetching data from the database
@@ -324,7 +324,7 @@ class AttendanceModelController extends Controller
         // Adding the details
         $section->addText('Nama Peserta Didik     : ' . $user->name, 'contentStyle', 'left');
         $section->addText('Industri Tempat PKL    : PT Mitra Global Informatika', 'contentStyle', 'left');
-        $section->addText('Nama Instruktur/Pembimbing Industri : Pak Andhira', 'contentStyle', 'left');
+        $section->addText('Nama Instruktur / Pembimbing Industri : Pak Andhira', 'contentStyle', 'left');
         $section->addText('Nama Guru Pembimbing   : Pak Hendri', 'contentStyle', 'left');
         $section->addTextBreak(1);
 
@@ -367,13 +367,13 @@ class AttendanceModelController extends Controller
         $section->addTextBreak(1);
         // Adding instructor's signature part
         $section->addText('.......................................... 2024', array('bold' => true), array('alignment' => 'right', 'size' => '8'));
-        $section->addText('Instruktur/Pembimbing Industri', array('bold' => true), array('alignment' => 'right', 'size' => '8'));
+        $section->addText('Instruktur / Pembimbing Industri', array('bold' => true), array('alignment' => 'right', 'size' => '8'));
         $section->addTextBreak(3);
         $section->addText('(................................................)', array('bold' => true), array('alignment' => 'right', 'size' => '8'));
 
 
         // Save the file to a temporary location
-        $tempFilePath = sys_get_temp_dir() . '/' . 'Laporan_PKL_' . now()->format('Y-m-d_H-i-s') . '.docx';
+        $tempFilePath = sys_get_temp_dir() . '/' . 'attendance report-' . now()->format('Y-m-d_H-i-s') . '.docx';
         $objWriter = IOFactory::createWriter($phpWord, 'Word2007');
         $objWriter->save($tempFilePath);
 

@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Log;
 use PhpOffice\PhpWord\PhpWord;
 use PhpOffice\PhpWord\IOFactory;
 use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\Storage;
 
 class ToDoListController extends Controller
 {
@@ -143,26 +144,44 @@ class ToDoListController extends Controller
      * Update the specified resource in storage for web.
      */
     public function updateWeb(Request $request, $id)
-    {
-        $request->validate([
-            'content' => 'required|string|max:255',
-            'status' => 'required|string',
-            'date' => 'required|date',
-            'keterangan' => 'required|string',
-        ]);
+{
+    // Validasi input
+    $request->validate([
+        'content' => 'required|string|max:255',
+        'keterangan' => 'required|string|max:255',
+        'status' => 'required|in:Pending,Completed',
+        'date' => 'required|date',
+        'file' => 'nullable|mimes:jpg,jpeg,png,pdf,docx,mp4,avi,mov', // Tambahkan validasi untuk file
+    ]);
 
-        $todolist = ToDoList::findOrFail($id);
-        $todolist->update([
-            'content' => $request->content,
-            'status' => $request->status,
-            'date' => $request->date,
-            'keterangan' => $request->keterangan,
-            'pesan' => $request->pesan,
-        ]);
+    // Temukan to-do list berdasarkan ID
+    $todolist = ToDoList::findOrFail($id);
 
-        return redirect()->route('ToDoList.index')
-            ->with('success', 'To-Do List berhasil diupdate.');
+    // Update data lainnya
+    $todolist->content = $request->input('content');
+    $todolist->keterangan = $request->input('keterangan');
+    $todolist->status = $request->input('status');
+    $todolist->date = $request->input('date');
+
+    // Jika ada file yang diunggah, simpan dan update path file
+    if ($request->hasFile('file')) {
+        // Hapus file lama jika ada
+        if ($todolist->file_path) {
+            Storage::delete($todolist->file_path);
+        }
+        
+        // Simpan file baru
+        $filePath = $request->file('file')->store('files', 'public');
+        $todolist->file_path = $filePath; // Update path file
     }
+
+    // Simpan perubahan ke database
+    $todolist->save();
+
+    // Redirect kembali ke daftar to-do list dengan pesan sukses
+    return redirect()->route('ToDoList.index')->with('success', 'To-Do List updated successfully!');
+}
+
 
     /**
      * Update the specified resource in storage for API.
@@ -224,6 +243,36 @@ class ToDoListController extends Controller
         return redirect()->route('ToDoList.index')->with('success', 'Status berhasil diupdate.');
     }
 
+    // Method untuk menampilkan form upload file
+public function showUploadForm($id)
+{
+    $todo = ToDoList::findOrFail($id);
+    return view('todolist.upload', compact('todo'));
+}
+
+// Method untuk menyimpan file setelah di-upload
+public function uploadFile(Request $request, $id)
+{
+    $request->validate([
+        'file' => 'nullable|mimes:jpg,jpeg,png,pdf,docx,mp4,avi,mov|max:51200', // Sesuaikan dengan tipe file yang diizinkan
+    ]);
+
+    $todo = ToDoList::find($id);
+
+    if ($request->hasFile('file')) {
+        $file = $request->file('file');
+        $filePath = $file->store('uploads', 'public'); // Simpan file ke folder 'uploads' di dalam folder 'storage/app/public'
+
+        // Simpan path file ke database
+        $todo->file_path = $filePath;
+        $todo->save();
+    }
+
+    return redirect()->back()->with('success', 'File berhasil di-upload.');
+}
+
+
+
     public function pesan(Request $request, $id)
     {
         $request->validate([
@@ -234,7 +283,7 @@ class ToDoListController extends Controller
         $todo->pesan = $request->pesan;
         $todo->save();
 
-        return redirect()->route('ToDoList.index')->with('success', 'Pesan berhasil disimpan.');
+        return redirect()->route('ToDoList.index')->with('success', 'message sent successfully');
     }
 
     public function createDocumentWeb()
@@ -288,7 +337,7 @@ class ToDoListController extends Controller
         // Adding the details
         $section->addText('Nama Peserta Didik     : ' . $user->name, 'contentStyle', 'left');
         $section->addText('Industri Tempat PKL    : PT Mitra Global Informatika', 'contentStyle', 'left');
-        $section->addText('Nama Instruktur/Pembimbing Industri : Pak Andhira', 'contentStyle', 'left');
+        $section->addText('Nama Instruktur / Pembimbing Industri : Pak Andhira', 'contentStyle', 'left');
         $section->addText('Nama Guru Pembimbing   : Pak Hendri', 'contentStyle', 'left');
         $section->addTextBreak(1);
 
@@ -330,12 +379,12 @@ class ToDoListController extends Controller
         $section->addTextBreak(1);
         // Adding instructor's signature part
         $section->addText('.......................................... 2024', array('bold' => true), array('alignment' => 'right', 'size' => '8'));
-        $section->addText('Instruktur/Pembimbing Industri', array('bold' => true), array('alignment' => 'right', 'size' => '8'));
+        $section->addText('Instruktur / Pembimbing Industri', array('bold' => true), array('alignment' => 'right', 'size' => '8'));
         $section->addTextBreak(3);
         $section->addText('(................................................)', array('bold' => true), array('alignment' => 'right', 'size' => '8'));
 
         // Save the file
-        $fileName = 'Laporan_PKL_' . now()->format('Y-m-d_H-i-s') . '.docx';
+        $fileName = 'assignment report-' . now()->format('d-m-Y') . '.docx';
         $filePath = storage_path('app/public/' . $fileName);
 
         $objWriter = IOFactory::createWriter($phpWord, 'Word2007');
@@ -395,7 +444,7 @@ class ToDoListController extends Controller
         // Adding the details
         $section->addText('Nama Peserta Didik     : ' . $user->name, 'contentStyle', 'left');
         $section->addText('Industri Tempat PKL    : PT Mitra Global Informatika', 'contentStyle', 'left');
-        $section->addText('Nama Instruktur/Pembimbing Industri : Pak Andhira', 'contentStyle', 'left');
+        $section->addText('Nama Instruktur / Pembimbing Industri : Pak Andhira', 'contentStyle', 'left');
         $section->addText('Nama Guru Pembimbing   : Pak Hendri', 'contentStyle', 'left');
         $section->addTextBreak(1);
 
@@ -437,12 +486,12 @@ class ToDoListController extends Controller
         $section->addTextBreak(1);
         // Adding instructor's signature part
         $section->addText('.......................................... 2024', array('bold' => true), array('alignment' => 'right', 'size' => '8'));
-        $section->addText('Instruktur/Pembimbing Industri', array('bold' => true), array('alignment' => 'right', 'size' => '8'));
+        $section->addText('Instruktur / Pembimbing Industri', array('bold' => true), array('alignment' => 'right', 'size' => '8'));
         $section->addTextBreak(3);
         $section->addText('(................................................)', array('bold' => true), array('alignment' => 'right', 'size' => '8'));
 
         // Save the file to a temporary location
-        $tempFilePath = sys_get_temp_dir() . '/' . 'Laporan_PKL_' . now()->format('Y-m-d_H-i-s') . '.docx';
+        $tempFilePath = sys_get_temp_dir() . '/' . 'assignment report-' . now()->format('Y-m-d_H-i-s') . '.docx';
         $objWriter = IOFactory::createWriter($phpWord, 'Word2007');
         $objWriter->save($tempFilePath);
 

@@ -65,16 +65,16 @@ class AuthController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed',
-            'password_confirmation' => 'required|string|min:8', // Pastikan validasi ini ada
-            'telp' => 'required|string|max:15',
-            'tempat_lahir' => 'required|string|max:255',
-            'tanggal_lahir' => 'required|date',
-            'jenis_kelamin' => 'required|in:Perempuan,Laki-laki',
-            'status' => 'required|string|max:255',
-            'jurusan' => 'required|string|max:255',
-            'sekolah' => 'required|string|max:255',
-            'agama' => 'required|string|max:255',
-            'alamat' => 'required|string|max:500',
+            'password_confirmation' => 'required|string|min:8',
+            'telp' => 'nullable|string|max:15',
+            'tempat_lahir' => 'nullable|string|max:255',
+            'tanggal_lahir' => 'nullable|date',
+            'jenis_kelamin' => 'nullable|in:Perempuan,Laki-laki',
+            'status' => 'nullable|string|max:255',
+            'jurusan' => 'nullable|string|max:255',
+            'sekolah' => 'nullable|string|max:255',
+            'agama' => 'nullable|string|max:255',
+            'alamat' => 'nullable|string|max:500',
         ]);
 
         Log::info('Validated Data: ', $validatedData);
@@ -84,22 +84,22 @@ class AuthController extends Controller
             'email' => $validatedData['email'],
             'password' => Hash::make($validatedData['password']),
             'role' => 'user',
-            'telp' => $validatedData['telp'],
-            'tempat_lahir' => $validatedData['tempat_lahir'],
-            'tanggal_lahir' => $validatedData['tanggal_lahir'],
-            'jenis_kelamin' => $validatedData['jenis_kelamin'],
-            'status' => $validatedData['status'],
-            'jurusan' => $validatedData['jurusan'],
-            'sekolah' => $validatedData['sekolah'],
-            'agama' => $validatedData['agama'],
-            'alamat' => $validatedData['alamat'],
+            'telp' => $validatedData['telp'] ?? null,
+            'tempat_lahir' => $validatedData['tempat_lahir'] ?? null,
+            'tanggal_lahir' => $validatedData['tanggal_lahir'] ?? null,
+            'jenis_kelamin' => $validatedData['jenis_kelamin'] ?? null,
+            'status' => $validatedData['status'] ?? null,
+            'jurusan' => $validatedData['jurusan'] ?? null,
+            'sekolah' => $validatedData['sekolah'] ?? null,
+            'agama' => $validatedData['agama'] ?? null,
+            'alamat' => $validatedData['alamat'] ?? null,
         ]);
-
 
         $token = $user->createToken('Personal Access Token')->plainTextToken;
 
         return response()->json(['token' => $token], 201);
     }
+
 
     public function changePassword(Request $request)
     {
